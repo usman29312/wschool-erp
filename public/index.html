@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waseem Science & Commerce Academy ERP</title>
+  <script>
+    // Automatic authorization router
+    fetch('/api/auth/status')
+      .then(res => res.json())
+      .then(data => {
+        if (data.loggedIn) {
+          if (data.user.role === 'admin') {
+            window.location.href = '/admin.html';
+          } else if (data.user.role === 'teacher') {
+            window.location.href = '/teacher.html';
+          }
+        } else {
+          window.location.href = '/login.html';
+        }
+      })
+      .catch(() => {
+        window.location.href = '/login.html';
+      });
+  </script>
+</head>
+<body>
+  <div style="font-family: Arial, sans-serif; text-align: center; margin-top: 15vh; color: #1E293B;">
+    <img src="/img/logo.png" alt="Academy Logo" style="width: 100px; height: 100px; margin-bottom: 1.5rem; border-radius: 50%; border: 3px solid #D4AF37; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onerror="this.style.display='none'">
+    <h3 style="font-weight: 700; margin-bottom: 0.5rem; color: #1857A6;">Waseem Science & Commerce Academy</h3>
+    <p style="font-size: 0.85rem; color: #64748B; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 2rem;">Learning Today, Leading Tomorrow</p>
+    <div style="margin: 0 auto; border: 4px solid #E2E8F0; border-top: 4px solid #1857A6; border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite;"></div>
+    <p style="font-size: 0.9rem; color: #64748B; margin-top: 1.5rem;">Authenticating portal session...</p>
+  </div>
+  <style>
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</body>
+</html>

@@ -1,0 +1,2717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Waseem Science & Commerce Academy</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Mobile Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="dashboard-wrapper">
+    <!-- Collapsible Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <img src="/img/logo.png" alt="Waseem Academy Logo">
+        <div class="sidebar-brand-text">
+          Waseem Academy
+          <span>ERP Portal</span>
+        </div>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="active" data-pane="pane-dashboard">
+          <a href="#"><i class="fa-solid fa-chart-line"></i><span>Overview</span></a>
+        </li>
+        <li data-pane="pane-sessions">
+          <a href="#"><i class="fa-solid fa-calendar-days"></i><span>Sessions</span></a>
+        </li>
+        <li data-pane="pane-classes">
+          <a href="#"><i class="fa-solid fa-school"></i><span>Classes & Subjects</span></a>
+        </li>
+        <li data-pane="pane-students">
+          <a href="#"><i class="fa-solid fa-user-graduate"></i><span>Students</span></a>
+        </li>
+        <li data-pane="pane-attendance">
+          <a href="#"><i class="fa-solid fa-clipboard-check"></i><span>Attendance</span></a>
+        </li>
+        <li data-pane="pane-results">
+          <a href="#"><i class="fa-solid fa-square-poll-vertical"></i><span>Results</span></a>
+        </li>
+        <li data-pane="pane-teachers">
+          <a href="#"><i class="fa-solid fa-chalkboard-teacher"></i><span>Teachers</span></a>
+        </li>
+        <li data-pane="pane-fees">
+          <a href="#"><i class="fa-solid fa-file-invoice-dollar"></i><span>Fee Management</span></a>
+        </li>
+        <li data-pane="pane-notices">
+          <a href="#"><i class="fa-solid fa-bullhorn"></i><span>Notice Board</span></a>
+        </li>
+        <li data-pane="pane-backup">
+          <a href="#"><i class="fa-solid fa-database"></i><span>System Backup</span></a>
+        </li>
+        <li data-pane="pane-profile">
+          <a href="#"><i class="fa-solid fa-user-gear"></i><span>Settings</span></a>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a>
+      </div>
+    </aside>
+
+    <!-- Content Frame -->
+    <main class="content-frame" id="content-frame">
+      <!-- Top Navbar -->
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button class="menu-toggle" id="menu-toggle">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h4 class="m-0 fw-bold d-none d-sm-block" style="color: var(--primary-color);">Admin Portal</h4>
+        </div>
+        <div class="navbar-right">
+          <span class="session-indicator" id="currentSessionBadge">Session: Loading...</span>
+          <div class="dropdown">
+            <button class="user-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="/img/logo.png" alt="Admin Avatar">
+              <span class="d-none d-md-inline fw-semibold ms-1" id="navAdminName">Principal Admin</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+              <li><a class="dropdown-item" href="#" data-pane-trigger="pane-profile"><i class="fa-solid fa-lock me-2"></i>Change Password</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="#" id="navLogoutBtn"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Workspace -->
+      <div class="main-workspace">
+        
+        <!-- Alerts Placeholder -->
+        <div id="globalAlert" class="alert alert-dismissible fade show d-none" role="alert">
+          <span id="globalAlertMessage"></span>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- PANE 1: OVERVIEW & DASHBOARD -->
+        <section class="dashboard-pane" id="pane-dashboard">
+          <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-stretch align-items-md-center mb-4">
+            <div>
+              <h3 class="fw-bold text-dark m-0" id="dashboardTitle"><i class="fa-solid fa-chart-line text-primary me-2"></i>Financial Overview</h3>
+            </div>
+            <div class="d-flex flex-wrap align-items-center bg-white p-2 rounded shadow-sm border gap-2" id="dashboardFilterContainer">
+              <div class="d-flex align-items-center flex-grow-1">
+                <label for="dashboardMonth" class="text-muted fw-semibold mb-0 me-2 fs-7">Month:</label>
+                <select class="form-select form-select-sm" id="dashboardMonth" style="min-width: 120px;">
+                  <option value="">All Months</option>
+                  <option value="January">January</option>
+                  <option value="February">February</option>
+                  <option value="March">March</option>
+                  <option value="April">April</option>
+                  <option value="May">May</option>
+                  <option value="June">June</option>
+                  <option value="July">July</option>
+                  <option value="August" selected>August</option>
+                  <option value="September">September</option>
+                  <option value="October">October</option>
+                  <option value="November">November</option>
+                  <option value="December">December</option>
+                </select>
+              </div>
+              <div class="d-flex align-items-center flex-grow-1">
+                <label for="dashboardYear" class="text-muted fw-semibold mb-0 me-2 fs-7">Session:</label>
+                <select class="form-select form-select-sm" id="dashboardYear" style="min-width: 130px;">
+                  <option value="">Select Session</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <!-- Card 1: Active Students -->
+            <div class="col-12 col-sm-6 col-lg-4">
+              <div class="stat-card primary">
+                <div class="stat-card-title">Active Students</div>
+                <div class="stat-card-value" id="cardTotalStudents">0</div>
+                <div class="stat-card-desc">Enrolled in selected session</div>
+                <i class="fa-solid fa-user-graduate stat-card-icon"></i>
+              </div>
+            </div>
+            <!-- Card 2: Expected Fee -->
+            <div class="col-12 col-sm-6 col-lg-4">
+              <div class="stat-card info">
+                <div class="stat-card-title">Expected Fee</div>
+                <div class="stat-card-value" style="color: var(--primary-color);">PKR <span id="cardExpectedFee">0.00</span></div>
+                <div class="stat-card-desc">Total billed for selected month</div>
+                <i class="fa-solid fa-file-invoice-dollar stat-card-icon"></i>
+              </div>
+            </div>
+            <!-- Card 3: Collected Fee -->
+            <div class="col-12 col-sm-6 col-lg-4">
+              <div class="stat-card success">
+                <div class="stat-card-title">Collected Fee</div>
+                <div class="stat-card-value">PKR <span id="cardCollectedFee">0.00</span></div>
+                <div class="stat-card-desc">Actual collections in month</div>
+                <i class="fa-solid fa-money-bill-wave stat-card-icon"></i>
+              </div>
+            </div>
+            <!-- Card 4: Pending Fee -->
+            <div class="col-12 col-sm-6 col-lg-4">
+              <div class="stat-card danger">
+                <div class="stat-card-title">Pending Fee</div>
+                <div class="stat-card-value" style="color: var(--secondary-color);">PKR <span id="cardPendingFee">0.00</span></div>
+                <div class="stat-card-desc">Outstanding balance for month</div>
+                <i class="fa-solid fa-circle-exclamation stat-card-icon"></i>
+              </div>
+            </div>
+            <!-- Card 5: Teacher Salaries -->
+            <div class="col-12 col-sm-6 col-lg-4">
+              <div class="stat-card secondary">
+                <div class="stat-card-title">Teacher Salaries</div>
+                <div class="stat-card-value" style="color: #6B7280;">PKR <span id="cardTeacherSalaries">0.00</span></div>
+                <div class="stat-card-desc">Salaries paid in month</div>
+                <i class="fa-solid fa-chalkboard-teacher stat-card-icon"></i>
+              </div>
+            </div>
+            <!-- Card 6: Net Revenue -->
+            <div class="col-12 col-sm-6 col-lg-4">
+              <div class="stat-card gold">
+                <div class="stat-card-title">Net Revenue</div>
+                <div class="stat-card-value">PKR <span id="cardNetRevenue">0.00</span></div>
+                <div class="stat-card-desc">Collected minus Salaries</div>
+                <i class="fa-solid fa-wallet stat-card-icon"></i>
+              </div>
+            </div>
+          </div>
+          <!-- Teacher Payroll Summary Banner Card -->
+          <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: linear-gradient(135deg, #1E293B 0%, #334155 100%); color: white;">
+            <div class="card-body p-4">
+              <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold m-0"><i class="fa-solid fa-money-check-dollar me-2 text-warning"></i>Teacher Payroll Summary — <span id="payrollSummaryMonth">Current Month</span></h5>
+                <span class="badge bg-warning text-dark px-3 py-2 fw-semibold" style="font-size:0.85rem;" id="payrollSummarySession">Active Session</span>
+              </div>
+              <div class="row g-3 text-center">
+                <div class="col-md-3 col-6">
+                  <div class="p-2 bg-white bg-opacity-10 rounded">
+                    <small class="text-white-50 d-block">Total Salary Due</small>
+                    <span class="fw-bold fs-5 text-warning">PKR <span id="cardPayrollDue">0.00</span></span>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="p-2 bg-white bg-opacity-10 rounded">
+                    <small class="text-white-50 d-block">Total Salary Paid</small>
+                    <span class="fw-bold fs-5 text-success">PKR <span id="cardPayrollPaid">0.00</span></span>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="p-2 bg-white bg-opacity-10 rounded">
+                    <small class="text-white-50 d-block">Salary Payable / Remaining</small>
+                    <span class="fw-bold fs-5 text-danger">PKR <span id="cardPayrollRemaining">0.00</span></span>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="p-2 bg-white bg-opacity-10 rounded">
+                    <small class="text-white-50 d-block">Faculty Status Breakdown</small>
+                    <div class="d-flex justify-content-center gap-2 mt-1" style="font-size:0.75rem;">
+                      <span class="badge bg-success" title="Fully Paid"><i class="fa-solid fa-check me-1"></i><span id="cardPaidCount">0</span></span>
+                      <span class="badge bg-warning text-dark" title="Partially Paid"><i class="fa-solid fa-hourglass-half me-1"></i><span id="cardPartialCount">0</span></span>
+                      <span class="badge bg-danger" title="Pending"><i class="fa-solid fa-clock me-1"></i><span id="cardPendingCount">0</span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 mb-4">
+              <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                  <h5 class="fw-bold m-0"><i class="fa-solid fa-chart-column me-2 text-primary"></i>Monthly Fee Collections</h5>
+                </div>
+                <div class="card-body p-4">
+                  <canvas id="feeCollectionChart" style="max-height: 300px;"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+              <div class="card border-0 shadow-sm" style="border-radius: 12px; height: 100%;">
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                  <h5 class="fw-bold m-0"><i class="fa-solid fa-chart-pie me-2 text-warning"></i>Student Distribution</h5>
+                </div>
+                <div class="card-body p-4 d-flex align-items-center justify-content-center">
+                  <canvas id="classDistributionChart" style="max-height: 250px; max-width: 250px;"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANE 2: SESSIONS -->
+        <section class="dashboard-pane d-none" id="pane-sessions">
+          <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-3"><i class="fa-solid fa-plus me-2 text-primary"></i>Create Academic Session</h5>
+              <form id="createSessionForm" class="row g-3 align-items-end">
+                <div class="col-md-5">
+                  <label for="sessionName" class="form-label">Session Name</label>
+                  <input type="text" class="form-control" id="sessionName" placeholder="e.g. 2026-2027" required>
+                </div>
+                <div class="col-md-4">
+                  <label for="sessionStatus" class="form-label">Status</label>
+                  <select class="form-select" id="sessionStatus">
+                    <option value="inactive">Inactive</option>
+                    <option value="active">Active (Primary Scope)</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <button type="submit" class="btn btn-primary w-100" style="background: var(--primary-color); border:none;"><i class="fa-solid fa-save me-2"></i>Save Session</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="table-responsive-custom">
+            <table class="table table-custom align-middle" id="sessionsTable">
+              <thead>
+                <tr>
+                  <th>Session ID</th>
+                  <th>Academic Year</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated by admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- PANE 3: CLASSES & SUBJECTS -->
+        <section class="dashboard-pane d-none" id="pane-classes">
+          <div class="row">
+            <div class="col-md-12 mb-4">
+              <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                <div class="card-body p-4">
+                  <h5 class="fw-bold mb-3"><i class="fa-solid fa-square-plus me-2 text-primary"></i>Add New Class</h5>
+                  <form id="createClassForm">
+                    <div class="row g-3 align-items-end">
+                      <div class="col-md-5">
+                        <label for="classNameSelect" class="form-label">Class Grade</label>
+                        <select class="form-select" id="classNameSelect" required>
+                          <option value="" disabled selected>Select Grade</option>
+                          <option value="Playgroup">Playgroup</option>
+                          <option value="Nursery">Nursery</option>
+                          <option value="Prep">Prep</option>
+                          <option value="Class 1">Class 1</option>
+                          <option value="Class 2">Class 2</option>
+                          <option value="Class 3">Class 3</option>
+                          <option value="Class 4">Class 4</option>
+                          <option value="Class 5">Class 5</option>
+                          <option value="Class 6">Class 6</option>
+                          <option value="Class 7">Class 7</option>
+                          <option value="Class 8">Class 8</option>
+                          <option value="Class 9">Class 9</option>
+                          <option value="Class 10">Class 10</option>
+                          <option value="Class 11">Class 11</option>
+                          <option value="Class 12">Class 12</option>
+                        </select>
+                      </div>
+                      <div class="col-md-5">
+                        <label for="classSection" class="form-label">Section</label>
+                        <input type="text" class="form-control" id="classSection" placeholder="e.g. A" required>
+                      </div>
+                      <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100" style="background: var(--primary-color); border:none;"><i class="fa-solid fa-plus me-2"></i>Save Class</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Class List Directory -->
+          <h5 class="fw-bold mb-3"><i class="fa-solid fa-table me-2 text-primary"></i>Classes & Curriculums</h5>
+          <div class="table-responsive-custom">
+            <table class="table table-custom align-middle" id="classesTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Class / Section</th>
+                  <th>Configured Subjects</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated by admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- PANE 4: STUDENTS MANAGEMENT -->
+        <section class="dashboard-pane d-none" id="pane-students">
+          <!-- Student Sub-Tabs Navigation -->
+          <ul class="nav nav-pills flex-wrap mb-4" id="adminStudentTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active fw-semibold" id="student-dir-tab-btn" data-bs-toggle="pill" data-bs-target="#tab-student-dir" type="button" role="tab">
+                <i class="fa-solid fa-users me-2"></i>Student Directory & Profiles
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link fw-semibold" id="student-promo-tab-btn" data-bs-toggle="pill" data-bs-target="#tab-student-promotion" type="button" role="tab">
+                <i class="fa-solid fa-graduation-cap me-2 text-warning"></i>Promotion & Session Transfer
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link fw-semibold" id="student-transfer-tab-btn" data-bs-toggle="pill" data-bs-target="#tab-student-transfer-status" type="button" role="tab">
+                <i class="fa-solid fa-arrows-split-up-and-left me-2 text-info"></i>Section Transfer & Status
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="adminStudentTabsContent">
+            <!-- 1. STUDENT DIRECTORY SUB-TAB -->
+            <div class="tab-pane fade show active" id="tab-student-dir" role="tabpanel">
+              <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-stretch align-items-md-center mb-4">
+                <div class="row g-2 flex-grow-1" style="max-width: 850px;">
+                  <div class="col-12 col-md-5">
+                    <div class="input-group">
+                      <span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                      <input type="text" class="form-control" id="studentSearchInput" placeholder="Search name, roll, or reg...">
+                    </div>
+                  </div>
+                  <div class="col-6 col-md-4">
+                    <select class="form-select" id="studentClassFilter">
+                      <option value="">All Classes</option>
+                    </select>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <select class="form-select" id="studentStatusFilter">
+                      <option value="">All Statuses</option>
+                      <option value="Active" selected>Active</option>
+                      <option value="Promoted">Promoted</option>
+                      <option value="Not Promoted">Not Promoted</option>
+                      <option value="Left">Left</option>
+                      <option value="Graduated">Graduated</option>
+                      <option value="Transferred">Transferred</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <button class="btn btn-primary w-100 w-md-auto" style="background: var(--primary-color); border:none;" data-bs-toggle="modal" data-bs-target="#studentAdmissionModal">
+                    <i class="fa-solid fa-user-plus me-2"></i>New Admission
+                  </button>
+                </div>
+              </div>
+
+              <!-- Students Directory -->
+              <div class="table-responsive-custom">
+                <table class="table table-custom align-middle" id="studentsTable">
+                  <thead>
+                    <tr>
+                      <th>Roll No</th>
+                      <th>Reg No</th>
+                      <th>Student Name</th>
+                      <th>Father Name</th>
+                      <th>Class & Section</th>
+                      <th>Status</th>
+                      <th>Attendance</th>
+                      <th class="text-end">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Populated by admin.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 2. PROMOTION & SESSION TRANSFER WIZARD SUB-TAB -->
+            <div class="tab-pane fade" id="tab-student-promotion" role="tabpanel">
+              <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                <div class="card-header bg-white py-3 border-0">
+                  <h5 class="fw-bold mb-0 text-dark">
+                    <i class="fa-solid fa-arrows-turn-to-dots me-2 text-warning"></i>Student Bulk Promotion Wizard
+                  </h5>
+                  <p class="text-muted small mb-0">Select source and destination sessions to promote or retain students without destroying past records.</p>
+                </div>
+                <div class="card-body p-3 p-md-4">
+                  <div class="row g-3 align-items-end">
+                    <!-- Source Scope -->
+                    <div class="col-12 col-md-3">
+                      <label class="form-label text-muted fw-semibold">Source Session (From)</label>
+                      <select class="form-select" id="wizardSourceSession">
+                        <option value="" disabled selected>Select Session</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-3">
+                      <label class="form-label text-muted fw-semibold">Source Class (From)</label>
+                      <select class="form-select" id="wizardSourceClass">
+                        <option value="" disabled selected>Select Class</option>
+                      </select>
+                    </div>
+
+                    <!-- Destination Scope -->
+                    <div class="col-12 col-md-3">
+                      <label class="form-label text-muted fw-semibold">Target Session (To)</label>
+                      <select class="form-select" id="wizardTargetSession">
+                        <option value="" disabled selected>Select Target Session</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-3">
+                      <label class="form-label text-muted fw-semibold">Target Class (To)</label>
+                      <select class="form-select" id="wizardTargetClass">
+                        <option value="" disabled selected>Select Target Class</option>
+                      </select>
+                    </div>
+
+                    <div class="col-12 text-end">
+                      <button class="btn btn-warning text-white fw-bold px-4" id="btnLoadPromotionPreview">
+                        <i class="fa-solid fa-magnifying-glass-chart me-2"></i>Load Promotion Sheet & Check Conflicts
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Promotion Conflict Analysis & Metrics Area -->
+              <div id="promoPreviewArea" class="d-none">
+                <!-- Summary Metric Cards -->
+                <div class="row g-3 mb-4">
+                  <div class="col-6 col-md-4">
+                    <div class="card border-0 shadow-sm text-center p-3" style="border-radius: 10px; background: #f8faff;">
+                      <span class="text-muted small fw-semibold text-uppercase">Total in Source Class</span>
+                      <h3 class="fw-bold mb-0 text-primary" id="metricPromoTotal">0</h3>
+                      <small class="text-muted">Enrolled students</small>
+                    </div>
+                  </div>
+                  <div class="col-6 col-md-4">
+                    <div class="card border-0 shadow-sm text-center p-3" style="border-radius: 10px; background: #f6fff8;">
+                      <span class="text-muted small fw-semibold text-uppercase">Eligible for Promotion</span>
+                      <h3 class="fw-bold mb-0 text-success" id="metricPromoEligible">0</h3>
+                      <small class="text-success fw-semibold">Ready to promote</small>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <div class="card border-0 shadow-sm text-center p-3" style="border-radius: 10px; background: #fff8f8;">
+                      <span class="text-muted small fw-semibold text-uppercase">Already Enrolled Conflicts</span>
+                      <h3 class="fw-bold mb-0 text-danger" id="metricPromoConflict">0</h3>
+                      <small class="text-danger fw-semibold">Already in target session</small>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Promotion Matrix Table Card -->
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                  <div class="card-header bg-white py-3 border-0 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                    <div>
+                      <h6 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-table-list me-2 text-primary"></i>Promotion Sheet & Roll Number Assignment</h6>
+                      <small class="text-muted">Uncheck students you do not wish to promote. Roll numbers are prefilled and editable.</small>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-outline-secondary" id="btnPromoSelectAllEligible">
+                        <i class="fa-solid fa-check-double me-1"></i>Select All Eligible
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary" id="btnPromoDeselectAll">
+                        <i class="fa-solid fa-xmark me-1"></i>Deselect All
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="table-responsive">
+                      <table class="table table-bordered table-hover align-middle mb-0" id="wizardPromoTable">
+                        <thead class="table-light">
+                          <tr>
+                            <th style="width: 40px;" class="text-center">
+                              <input type="checkbox" id="masterPromoCheckbox" class="form-check-input">
+                            </th>
+                            <th style="width: 80px;">Roll No</th>
+                            <th>Student & Father Name</th>
+                            <th>Latest Exam Result</th>
+                            <th>Fee Status</th>
+                            <th>Conflict Status</th>
+                            <th style="width: 150px;">Action</th>
+                            <th style="width: 130px;">Target Roll #</th>
+                            <th>Remarks / Notes</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <!-- Populated dynamically -->
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="card-footer bg-white p-3 text-end border-0">
+                    <button class="btn btn-success btn-lg fw-bold px-4 shadow-sm" id="btnExecutePromotionReview" disabled>
+                      <i class="fa-solid fa-circle-check me-2"></i>Review & Execute Promotion
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. SECTION TRANSFER & STATUS SUB-TAB -->
+            <div class="tab-pane fade" id="tab-student-transfer-status" role="tabpanel">
+              <div class="row g-4">
+                <!-- Section Transfer Card -->
+                <div class="col-12 col-lg-6">
+                  <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                    <div class="card-header bg-white py-3 border-0">
+                      <h5 class="fw-bold mb-0 text-primary">
+                        <i class="fa-solid fa-arrows-split-up-and-left me-2"></i>Same-Session Section Transfer
+                      </h5>
+                      <p class="text-muted small mb-0">Move a student from one section to another within the current academic session (e.g. 9-A → 9-B).</p>
+                    </div>
+                    <div class="card-body p-4">
+                      <form id="sectionTransferForm">
+                        <div class="mb-3">
+                          <label class="form-label text-muted fw-semibold">Academic Session</label>
+                          <select class="form-select" id="transferSessionSelect" required>
+                            <option value="" disabled selected>Select Session</option>
+                          </select>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label text-muted fw-semibold">Select Student</label>
+                          <select class="form-select" id="transferStudentSelect" required>
+                            <option value="" disabled selected>Select Student to Transfer</option>
+                          </select>
+                          <small class="text-muted" id="transferCurrentClassNote"></small>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label text-muted fw-semibold">Target Class & Section</label>
+                          <select class="form-select" id="transferTargetClassSelect" required>
+                            <option value="" disabled selected>Select Destination Section</option>
+                          </select>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label text-muted fw-semibold">New Roll Number in Section (Optional)</label>
+                          <input type="text" class="form-control" id="transferNewRollInput" placeholder="Leave blank to keep current roll number">
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label text-muted fw-semibold">Transfer Reason / Remarks</label>
+                          <input type="text" class="form-control" id="transferRemarksInput" placeholder="e.g. Requested section change">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold py-2" id="btnSubmitSectionTransfer">
+                          <i class="fa-solid fa-arrow-right-arrow-left me-2"></i>Execute Section Transfer
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Status Manager Card -->
+                <div class="col-12 col-lg-6">
+                  <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                    <div class="card-header bg-white py-3 border-0">
+                      <h5 class="fw-bold mb-0 text-danger">
+                        <i class="fa-solid fa-user-tag me-2"></i>Student Status Manager
+                      </h5>
+                      <p class="text-muted small mb-0">Update enrollment status for a student in an academic session (e.g. mark as Left, Graduated, or Not Promoted).</p>
+                    </div>
+                    <div class="card-body p-4">
+                      <form id="studentStatusUpdateForm">
+                        <div class="mb-3">
+                          <label class="form-label text-muted fw-semibold">Academic Session</label>
+                          <select class="form-select" id="statusUpdateSessionSelect" required>
+                            <option value="" disabled selected>Select Session</option>
+                          </select>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label text-muted fw-semibold">Select Student</label>
+                          <select class="form-select" id="statusUpdateStudentSelect" required>
+                            <option value="" disabled selected>Select Student</option>
+                          </select>
+                          <small class="text-muted" id="statusUpdateCurrentStatusNote"></small>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label text-muted fw-semibold">New Status</label>
+                          <select class="form-select" id="statusUpdateNewStatusSelect" required>
+                            <option value="" disabled selected>Select New Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Promoted">Promoted</option>
+                            <option value="Not Promoted">Not Promoted (Retain / Repeat)</option>
+                            <option value="Left">Left School</option>
+                            <option value="Graduated">Graduated</option>
+                            <option value="Transferred">Transferred Out</option>
+                          </select>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label text-muted fw-semibold">Reason / Remarks</label>
+                          <input type="text" class="form-control" id="statusUpdateRemarksInput" placeholder="e.g. Family relocation, graduated 10th grade">
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100 fw-bold py-2" id="btnSubmitStatusUpdate">
+                          <i class="fa-solid fa-tag me-2"></i>Update Student Status
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANE 5b: ATTENDANCE DASHBOARD -->
+        <section class="dashboard-pane d-none" id="pane-attendance">
+          <ul class="nav nav-pills flex-wrap mb-4" id="adminAttendanceTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active fw-semibold" id="student-att-tab" data-bs-toggle="pill" data-bs-target="#tab-student-attendance" type="button" role="tab"><i class="fa-solid fa-user-graduate me-2"></i>Student Attendance</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link fw-semibold" id="teacher-att-tab" data-bs-toggle="pill" data-bs-target="#tab-teacher-attendance" type="button" role="tab"><i class="fa-solid fa-chalkboard-teacher me-2"></i>Teacher Attendance</button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="adminAttendanceTabsContent">
+            <!-- STUDENT ATTENDANCE TAB -->
+            <div class="tab-pane fade show active" id="tab-student-attendance" role="tabpanel">
+              <!-- Sub-tabs for Student Attendance -->
+              <ul class="nav nav-tabs mb-4" id="studentAttendanceSubTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link active fw-bold" id="subtab-daily-btn" data-bs-toggle="tab" data-bs-target="#subtab-daily" type="button" role="tab">
+                    <i class="fa-solid fa-calendar-day me-2 text-primary"></i>Daily Overview & Status
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link fw-bold" id="subtab-monthly-btn" data-bs-toggle="tab" data-bs-target="#subtab-monthly" type="button" role="tab">
+                    <i class="fa-solid fa-table-cells me-2 text-success"></i>Monthly Class Grid
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link fw-bold" id="subtab-student-history-btn" data-bs-toggle="tab" data-bs-target="#subtab-student-history" type="button" role="tab">
+                    <i class="fa-solid fa-user-clock me-2 text-info"></i>Student History
+                  </button>
+                </li>
+              </ul>
+
+              <div class="tab-content" id="studentAttendanceSubTabsContent">
+                <!-- 1. DAILY OVERVIEW SUB-TAB -->
+                <div class="tab-pane fade show active" id="subtab-daily" role="tabpanel">
+                  <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                    <div class="card-body p-3 p-md-4">
+                      <div class="row g-3 align-items-end">
+                        <div class="col-12 col-md-4">
+                          <label class="form-label text-muted fw-semibold">Select Date</label>
+                          <input type="date" class="form-control" id="dailyAttDateFilter">
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <label class="form-label text-muted fw-semibold">Search Class / Teacher</label>
+                          <input type="text" class="form-control" id="dailyAttSearchFilter" placeholder="Filter by class or teacher name...">
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <button class="btn btn-primary w-100" id="loadDailyAttSummaryBtn" style="background:var(--primary-color);border:none;">
+                            <i class="fa-solid fa-rotate me-2"></i>Load Daily Overview
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Daily Overview Stat Summary Cards -->
+                  <div id="dailyAttStatsArea" class="row g-3 mb-4 d-none">
+                    <div class="col-6 col-md-3">
+                      <div class="card border-0 shadow-sm text-center p-3" style="border-radius: 10px; background: #f8faff;">
+                        <span class="text-muted small fw-semibold text-uppercase">Total Classes</span>
+                        <h3 class="fw-bold mb-0 text-primary" id="statDailyTotalClasses">0</h3>
+                        <small class="text-muted" id="statDailyMarkedRatio">0 marked</small>
+                      </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <div class="card border-0 shadow-sm text-center p-3" style="border-radius: 10px; background: #f6fff8;">
+                        <span class="text-muted small fw-semibold text-uppercase">Total Present</span>
+                        <h3 class="fw-bold mb-0 text-success" id="statDailyTotalPresent">0</h3>
+                        <small class="text-muted" id="statDailyOverallPercent">0%</small>
+                      </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <div class="card border-0 shadow-sm text-center p-3" style="border-radius: 10px; background: #fff8f8;">
+                        <span class="text-muted small fw-semibold text-uppercase">Total Absent</span>
+                        <h3 class="fw-bold mb-0 text-danger" id="statDailyTotalAbsent">0</h3>
+                        <small class="text-muted" id="statDailyAbsentNote">Absent students</small>
+                      </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <div class="card border-0 shadow-sm text-center p-3" style="border-radius: 10px; background: #fffdf5;">
+                        <span class="text-muted small fw-semibold text-uppercase">On Leave</span>
+                        <h3 class="fw-bold mb-0 text-warning" id="statDailyTotalLeave">0</h3>
+                        <small class="text-muted">Approved leaves</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Daily Overview Classes Table -->
+                  <div id="dailyAttTableArea" class="card border-0 shadow-sm" style="border-radius: 12px;">
+                    <div class="card-body p-0">
+                      <div class="table-responsive">
+                        <table class="table table-custom align-middle mb-0" id="dailyAttSummaryTable">
+                          <thead>
+                            <tr>
+                              <th>Class & Section</th>
+                              <th class="text-center">Enrolled</th>
+                              <th class="text-center">Submission Status</th>
+                              <th class="text-center text-success">Present</th>
+                              <th class="text-center text-danger">Absent</th>
+                              <th class="text-center text-warning">Leave</th>
+                              <th class="text-center">Attendance %</th>
+                              <th>Marked By</th>
+                              <th class="text-end">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <!-- Populated dynamically -->
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 2. MONTHLY GRID SUB-TAB -->
+                <div class="tab-pane fade" id="subtab-monthly" role="tabpanel">
+                  <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                    <div class="card-body p-3 p-md-4">
+                      <div class="row g-3 align-items-end">
+                        <div class="col-12 col-sm-5 col-md-4">
+                          <label class="form-label text-muted fw-semibold">Select Class</label>
+                          <select class="form-select" id="attClassFilter">
+                            <option value="">-- Select Class --</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-sm-4 col-md-4">
+                          <label class="form-label text-muted fw-semibold">Select Month</label>
+                          <input type="month" class="form-control" id="attMonthFilter">
+                        </div>
+                        <div class="col-12 col-sm-3 col-md-4">
+                          <button class="btn btn-primary w-100" id="loadAttendanceReportBtn" style="background:var(--primary-color);border:none;">
+                            <i class="fa-solid fa-magnifying-glass me-2"></i>Load Monthly Grid
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Monthly Summary Stats Area -->
+                  <div id="monthlySummaryCards" class="row g-3 mb-4 d-none">
+                    <div class="col-6 col-md-3">
+                      <div class="card border-0 shadow-sm p-3 text-center" style="border-radius: 10px; background: #f8faff;">
+                        <span class="text-muted small fw-semibold text-uppercase">Total Students</span>
+                        <h4 class="fw-bold mb-0 text-primary" id="statMonthlyStudents">0</h4>
+                      </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <div class="card border-0 shadow-sm p-3 text-center" style="border-radius: 10px; background: #f8faff;">
+                        <span class="text-muted small fw-semibold text-uppercase">Days Recorded</span>
+                        <h4 class="fw-bold mb-0 text-secondary" id="statMonthlyDays">0</h4>
+                      </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <div class="card border-0 shadow-sm p-3 text-center" style="border-radius: 10px; background: #f6fff8;">
+                        <span class="text-muted small fw-semibold text-uppercase">Class Average</span>
+                        <h4 class="fw-bold mb-0 text-success" id="statMonthlyAvgPercent">0%</h4>
+                      </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                      <div class="card border-0 shadow-sm p-3 text-center" style="border-radius: 10px; background: #fff8f8;">
+                        <span class="text-muted small fw-semibold text-uppercase">Low Attendance (&lt;75%)</span>
+                        <h4 class="fw-bold mb-0 text-danger" id="statMonthlyLowCount">0</h4>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="attReportArea" class="card border-0 shadow-sm d-none" style="border-radius: 12px;">
+                    <div class="card-body p-0">
+                      <div class="table-responsive" style="max-height: 600px; overflow-x: auto;">
+                        <table class="table table-bordered table-sm align-middle mb-0" id="attReportTable">
+                          <thead id="attReportHead" class="table-light sticky-top"></thead>
+                          <tbody id="attReportBody"></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 3. STUDENT HISTORY SUB-TAB -->
+                <div class="tab-pane fade" id="subtab-student-history" role="tabpanel">
+                  <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                    <div class="card-body p-3 p-md-4">
+                      <div class="row g-3 align-items-end">
+                        <div class="col-12 col-md-4">
+                          <label class="form-label text-muted fw-semibold">Select Student</label>
+                          <select class="form-select" id="historyStudentSelect">
+                            <option value="">-- Choose Student --</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <label class="form-label text-muted fw-semibold">Filter Month (Optional)</label>
+                          <input type="month" class="form-control" id="historyMonthFilter">
+                        </div>
+                        <div class="col-12 col-md-4">
+                          <button class="btn btn-primary w-100" id="loadStudentHistoryBtn" style="background:var(--primary-color);border:none;">
+                            <i class="fa-solid fa-user-check me-2"></i>View Student History
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Student Profile & History Details Area -->
+                  <div id="studentHistoryDetailsArea" class="d-none">
+                    <!-- Student Header Profile Card -->
+                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: linear-gradient(135deg, #f8faff 0%, #edf2f7 100%);">
+                      <div class="card-body p-4">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                          <div class="d-flex align-items-center gap-3">
+                            <img id="histStudentAvatar" src="/img/logo.png" alt="Student Photo" class="rounded-circle border" style="width:65px; height:65px; object-fit:cover;">
+                            <div>
+                              <h5 class="fw-bold mb-1" id="histStudentName">-</h5>
+                              <div class="text-muted small">
+                                <span>Roll: <strong id="histStudentRoll">-</strong></span> | 
+                                <span>Father: <span id="histStudentFather">-</span></span> | 
+                                <span>Reg: <span id="histStudentReg">-</span></span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="d-flex flex-wrap gap-2 text-center">
+                            <div class="bg-white rounded px-3 py-2 border shadow-sm">
+                              <div class="small text-muted fw-semibold">Present</div>
+                              <div class="fw-bold text-success fs-5" id="histPresentCount">0</div>
+                            </div>
+                            <div class="bg-white rounded px-3 py-2 border shadow-sm">
+                              <div class="small text-muted fw-semibold">Absent</div>
+                              <div class="fw-bold text-danger fs-5" id="histAbsentCount">0</div>
+                            </div>
+                            <div class="bg-white rounded px-3 py-2 border shadow-sm">
+                              <div class="small text-muted fw-semibold">Leave</div>
+                              <div class="fw-bold text-warning fs-5" id="histLeaveCount">0</div>
+                            </div>
+                            <div class="bg-white rounded px-3 py-2 border shadow-sm">
+                              <div class="small text-muted fw-semibold">Attendance %</div>
+                              <div class="fw-bold text-primary fs-5" id="histPercentage">0%</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Date-wise logs table -->
+                    <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                      <div class="card-header bg-white py-3 border-0">
+                        <h6 class="fw-bold mb-0"><i class="fa-solid fa-list-check me-2 text-primary"></i>Date-Wise Attendance Records</h6>
+                      </div>
+                      <div class="card-body p-0">
+                        <div class="table-responsive">
+                          <table class="table table-custom align-middle mb-0" id="studentHistoryTable">
+                            <thead>
+                              <tr>
+                                <th>Date</th>
+                                <th>Class</th>
+                                <th>Status</th>
+                                <th>Marked By</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <!-- Populated dynamically -->
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> <!-- Close tab-student-attendance -->
+
+          <!-- TEACHER ATTENDANCE TAB -->
+          <div class="tab-pane fade" id="tab-teacher-attendance" role="tabpanel">
+            <div class="row g-3 align-items-end mb-4">
+              <div class="col-12 col-sm-5 col-md-4">
+                <label class="form-label fw-semibold">Select Month</label>
+                <input type="month" class="form-control" id="teacherAttMonthFilter">
+              </div>
+              <div class="col-12 col-sm-4 col-md-4">
+                <button class="btn btn-primary w-100" id="loadTeacherAttReportBtn" style="background:var(--primary-color);border:none;">
+                  <i class="fa-solid fa-magnifying-glass me-2"></i>Load Monthly Report
+                </button>
+              </div>
+              <div class="col-12 col-sm-3 col-md-4">
+                <button class="btn btn-warning w-100 text-white" data-bs-toggle="modal" data-bs-target="#markTeacherAttendanceModal" style="background:var(--gold-color);border:none;">
+                  <i class="fa-solid fa-clipboard-check me-2"></i>Mark Attendance
+                </button>
+              </div>
+            </div>
+
+            <div id="teacherAttReportArea" class="d-none">
+              <div class="table-responsive">
+                <table class="table table-custom align-middle" id="teacherAttTable">
+                  <thead>
+                    <tr>
+                      <th>Teacher Name</th>
+                      <th>Total Present</th>
+                      <th>Total Absent</th>
+                      <th>Total Leave</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          </div> <!-- Close tab-content -->
+        </section>
+
+        <!-- PANE 4c: RESULT MANAGEMENT SYSTEM -->
+        <section class="dashboard-pane d-none" id="pane-results">
+          <!-- Main Result Navigation Tabs -->
+          <ul class="nav nav-pills flex-wrap mb-4" id="adminResultTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active fw-bold" id="res-overview-tab" data-bs-toggle="pill" data-bs-target="#subtab-res-overview" type="button" role="tab">
+                <i class="fa-solid fa-chart-pie me-2 text-primary"></i>Overview & Analytics
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link fw-bold" id="res-marks-tab" data-bs-toggle="pill" data-bs-target="#subtab-res-marks" type="button" role="tab">
+                <i class="fa-solid fa-list-check me-2 text-success"></i>Marks Management
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link fw-bold" id="res-cards-tab" data-bs-toggle="pill" data-bs-target="#subtab-res-cards" type="button" role="tab">
+                <i class="fa-solid fa-id-card me-2 text-info"></i>Result Cards & Bulk Print
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link fw-bold" id="res-history-tab" data-bs-toggle="pill" data-bs-target="#subtab-res-history" type="button" role="tab">
+                <i class="fa-solid fa-clock-rotate-left me-2 text-warning"></i>Student History
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link fw-bold" id="res-subject-tab" data-bs-toggle="pill" data-bs-target="#subtab-res-subject" type="button" role="tab">
+                <i class="fa-solid fa-book-bookmark me-2 text-danger"></i>Subject Performance
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="adminResultTabsContent">
+            <!-- 1. OVERVIEW & ANALYTICS SUBTAB -->
+            <div class="tab-pane fade show active" id="subtab-res-overview" role="tabpanel">
+              <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                <div class="card-body p-3 p-md-4">
+                  <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-4">
+                      <label class="form-label text-muted fw-semibold">Select Class</label>
+                      <select class="form-select" id="overviewResultClassSelect">
+                        <option value="">-- Choose Class --</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <label class="form-label text-muted fw-semibold">Exam / Term Type</label>
+                      <select class="form-select" id="overviewResultExamSelect">
+                        <option value="First Term">First Term</option>
+                        <option value="Second Term" selected>Second Term</option>
+                        <option value="Final Term">Final Term</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <button class="btn btn-primary w-100" id="loadResultOverviewBtn" style="background:var(--primary-color);border:none;">
+                        <i class="fa-solid fa-chart-line me-2"></i>Load Analytics
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Overview Stat Cards -->
+              <div id="resultOverviewStatsArea" class="row g-3 mb-4 d-none">
+                <div class="col-6 col-md-3">
+                  <div class="card border-0 shadow-sm p-3 text-center" style="border-radius: 10px; background: #f8faff;">
+                    <span class="text-muted small fw-semibold text-uppercase">Total Enrolled</span>
+                    <h3 class="fw-bold mb-0 text-primary" id="statResEnrolled">0</h3>
+                    <small class="text-muted" id="statResEvaluatedNote">0 evaluated</small>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="card border-0 shadow-sm p-3 text-center" style="border-radius: 10px; background: #f6fff8;">
+                    <span class="text-muted small fw-semibold text-uppercase">Passed Students</span>
+                    <h3 class="fw-bold mb-0 text-success" id="statResPassed">0</h3>
+                    <small class="text-muted" id="statResPassRate">0% Pass Rate</small>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="card border-0 shadow-sm p-3 text-center" style="border-radius: 10px; background: #fff8f8;">
+                    <span class="text-muted small fw-semibold text-uppercase">Failed Students</span>
+                    <h3 class="fw-bold mb-0 text-danger" id="statResFailed">0</h3>
+                    <small class="text-muted" id="statResFailRate">0% Fail Rate</small>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="card border-0 shadow-sm p-3 text-center" style="border-radius: 10px; background: #fffdf5;">
+                    <span class="text-muted small fw-semibold text-uppercase">Class Average</span>
+                    <h3 class="fw-bold mb-0 text-warning" id="statResClassAvg">0.00%</h3>
+                    <small class="text-muted" id="statResMinMax">High: 0% | Low: 0%</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Workflow Status & Grade Distribution -->
+              <div id="resultOverviewDetailsArea" class="row g-3 mb-4 d-none">
+                <div class="col-12 col-lg-5">
+                  <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                    <div class="card-header bg-white py-3 border-0">
+                      <h6 class="fw-bold mb-0"><i class="fa-solid fa-list-check me-2 text-primary"></i>Evaluation & Workflow Status</h6>
+                    </div>
+                    <div class="card-body">
+                      <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                          <span><i class="fa-solid fa-circle-check text-success me-2"></i>Results Completed</span>
+                          <span class="badge bg-success rounded-pill" id="statResCompletedCount">0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                          <span><i class="fa-solid fa-clock text-warning me-2"></i>In Progress / Partial</span>
+                          <span class="badge bg-warning text-dark rounded-pill" id="statResInProgressCount">0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                          <span><i class="fa-solid fa-globe text-info me-2"></i>Published Officially</span>
+                          <span class="badge bg-info text-white rounded-pill" id="statResPublishedCount">0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                          <span><i class="fa-solid fa-lock text-danger me-2"></i>Locked by Administration</span>
+                          <span class="badge bg-danger rounded-pill" id="statResLockedCount">0</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-lg-7">
+                  <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                    <div class="card-header bg-white py-3 border-0">
+                      <h6 class="fw-bold mb-0"><i class="fa-solid fa-chart-simple me-2 text-primary"></i>Grade Distribution Breakdown</h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="row g-2 text-center" id="gradeDistributionCardsContainer">
+                        <!-- Populated via JS -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. MARKS MANAGEMENT SUBTAB -->
+            <div class="tab-pane fade" id="subtab-res-marks" role="tabpanel">
+              <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                <div class="card-body p-3 p-md-4">
+                  <div class="row g-3 align-items-end">
+                    <div class="col-12 col-sm-6 col-md-3">
+                      <label class="form-label text-muted fw-semibold">Class</label>
+                      <select class="form-select" id="manageMarksClassSelect">
+                        <option value="">-- Choose Class --</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                      <label class="form-label text-muted fw-semibold">Exam Type</label>
+                      <select class="form-select" id="manageMarksExamSelect">
+                        <option value="First Term">First Term</option>
+                        <option value="Second Term" selected>Second Term</option>
+                        <option value="Final Term">Final Term</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2">
+                      <label class="form-label text-muted fw-semibold">Grade Filter</label>
+                      <select class="form-select" id="manageMarksGradeFilter">
+                        <option value="">All Grades</option>
+                        <option value="A+">A+</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2">
+                      <label class="form-label text-muted fw-semibold">Overall Status</label>
+                      <select class="form-select" id="manageMarksStatusFilter">
+                        <option value="">All (Pass/Fail)</option>
+                        <option value="Pass">Pass Only</option>
+                        <option value="Fail">Fail Only</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-2">
+                      <button class="btn btn-primary w-100" id="loadManageMarksBtn" style="background:var(--primary-color);border:none;">
+                        <i class="fa-solid fa-filter me-2"></i>Filter
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="row g-3 align-items-center mt-2 pt-2 border-top">
+                    <div class="col-12 col-md-5">
+                      <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="fa-solid fa-search text-muted"></i></span>
+                        <input type="text" class="form-control" id="manageMarksSearchInput" placeholder="Search by student name or roll #...">
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-7 text-md-end d-flex flex-wrap justify-content-md-end gap-2">
+                      <button class="btn btn-outline-success btn-sm fw-semibold" id="btnAdminPublishAll">
+                        <i class="fa-solid fa-bullhorn me-1"></i>Publish All
+                      </button>
+                      <button class="btn btn-outline-secondary btn-sm fw-semibold" id="btnAdminUnpublishAll">
+                        <i class="fa-solid fa-eye-slash me-1"></i>Unpublish
+                      </button>
+                      <button class="btn btn-outline-danger btn-sm fw-semibold" id="btnAdminLockAll">
+                        <i class="fa-solid fa-lock me-1"></i>Lock All
+                      </button>
+                      <button class="btn btn-outline-warning btn-sm fw-semibold" id="btnAdminUnlockAll">
+                        <i class="fa-solid fa-lock-open me-1"></i>Unlock
+                      </button>
+                      <div class="dropdown">
+                        <button class="btn btn-outline-primary btn-sm dropdown-toggle fw-semibold" type="button" data-bs-toggle="dropdown">
+                          <i class="fa-solid fa-file-export me-1"></i>Export
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                          <li><a class="dropdown-item" href="#" id="btnExportCsv"><i class="fa-solid fa-file-csv me-2 text-primary"></i>Export as CSV</a></li>
+                          <li><a class="dropdown-item" href="#" id="btnExportXls"><i class="fa-solid fa-file-excel me-2 text-success"></i>Export as Excel (.xls)</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Marks Management Table -->
+              <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-custom align-middle mb-0" id="adminMarksTable">
+                      <thead>
+                        <tr>
+                          <th style="width:60px;">Pos</th>
+                          <th style="width:70px;">Roll</th>
+                          <th>Student Name</th>
+                          <th class="text-center">Total</th>
+                          <th class="text-center">Obtained</th>
+                          <th class="text-center">Percentage</th>
+                          <th class="text-center">Grade</th>
+                          <th class="text-center">Overall</th>
+                          <th class="text-center">Status</th>
+                          <th class="text-center">Published</th>
+                          <th class="text-center">Locked</th>
+                          <th class="text-end">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- Populated via JS -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. RESULT CARDS & BULK PRINT SUBTAB -->
+            <div class="tab-pane fade" id="subtab-res-cards" role="tabpanel">
+              <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                <div class="card-body p-3 p-md-4">
+                  <div class="row g-3 align-items-end">
+                    <div class="col-12 col-sm-6 col-md-4">
+                      <label class="form-label text-muted fw-semibold">Class</label>
+                      <select class="form-select" id="cardClassSelect">
+                        <option value="">-- Choose Class --</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                      <label class="form-label text-muted fw-semibold">Exam / Term Type</label>
+                      <select class="form-select" id="cardExamSelect">
+                        <option value="First Term">First Term</option>
+                        <option value="Second Term" selected>Second Term</option>
+                        <option value="Final Term">Final Term</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-4 d-flex gap-2">
+                      <button class="btn btn-primary flex-grow-1" id="loadResultCardsBtn" style="background:var(--primary-color);border:none;">
+                        <i class="fa-solid fa-search me-2"></i>Load Cards
+                      </button>
+                      <button class="btn btn-success fw-semibold" id="btnBulkPrintCards" disabled>
+                        <i class="fa-solid fa-print me-1"></i>Bulk Print All
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Result Cards List -->
+              <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-custom align-middle mb-0" id="adminCardsListTable">
+                      <thead>
+                        <tr>
+                          <th>Position</th>
+                          <th>Roll No</th>
+                          <th>Student Name</th>
+                          <th>Class</th>
+                          <th>Percentage</th>
+                          <th>Grade</th>
+                          <th>Overall</th>
+                          <th class="text-end">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- Populated via JS -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. STUDENT HISTORY SUBTAB -->
+            <div class="tab-pane fade" id="subtab-res-history" role="tabpanel">
+              <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                <div class="card-body p-3 p-md-4">
+                  <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-8">
+                      <label class="form-label text-muted fw-semibold">Select Student</label>
+                      <select class="form-select" id="resHistoryStudentSelect">
+                        <option value="">-- Choose Student --</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <button class="btn btn-primary w-100" id="loadStudentResHistoryBtn" style="background:var(--primary-color);border:none;">
+                        <i class="fa-solid fa-user-check me-2"></i>View Academic History
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Student Profile Card & History Timeline Area -->
+              <div id="studentResHistoryArea" class="d-none">
+                <!-- Profile Header Card -->
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; background: linear-gradient(135deg, #f8faff 0%, #edf2f7 100%);">
+                  <div class="card-body p-4">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                      <div class="d-flex align-items-center gap-3">
+                        <img id="resHistAvatar" src="/img/logo.png" alt="Student Photo" class="rounded-circle border" style="width:65px; height:65px; object-fit:cover;">
+                        <div>
+                          <h5 class="fw-bold mb-1" id="resHistName">-</h5>
+                          <div class="text-muted small">
+                            <span>Roll: <strong id="resHistRoll">-</strong></span> | 
+                            <span>Father: <span id="resHistFather">-</span></span> | 
+                            <span>Reg: <span id="resHistReg">-</span></span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="text-end">
+                        <span class="badge bg-primary px-3 py-2 fs-7" id="resHistTotalExams">0 Exams Recorded</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- History Cards Table -->
+                <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                  <div class="card-header bg-white py-3 border-0">
+                    <h6 class="fw-bold mb-0"><i class="fa-solid fa-timeline me-2 text-primary"></i>Exam Terms Record Timeline</h6>
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="table-responsive">
+                      <table class="table table-custom align-middle mb-0" id="studentResHistoryTable">
+                        <thead>
+                          <tr>
+                            <th>Exam Term</th>
+                            <th>Class</th>
+                            <th>Session</th>
+                            <th class="text-center">Total Marks</th>
+                            <th class="text-center">Obtained</th>
+                            <th class="text-center">Percentage</th>
+                            <th class="text-center">Grade</th>
+                            <th class="text-center">Overall</th>
+                            <th class="text-end">Card</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <!-- Populated via JS -->
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. SUBJECT PERFORMANCE SUBTAB -->
+            <div class="tab-pane fade" id="subtab-res-subject" role="tabpanel">
+              <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                <div class="card-body p-3 p-md-4">
+                  <div class="row g-3 align-items-end">
+                    <div class="col-12 col-md-4">
+                      <label class="form-label text-muted fw-semibold">Class</label>
+                      <select class="form-select" id="perfSubjectClassSelect">
+                        <option value="">-- Choose Class --</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <label class="form-label text-muted fw-semibold">Subject</label>
+                      <select class="form-select" id="perfSubjectSelect" disabled>
+                        <option value="">-- Select Class First --</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-2">
+                      <label class="form-label text-muted fw-semibold">Exam Type</label>
+                      <select class="form-select" id="perfSubjectExamSelect">
+                        <option value="First Term">First Term</option>
+                        <option value="Second Term" selected>Second Term</option>
+                        <option value="Final Term">Final Term</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-2">
+                      <button class="btn btn-primary w-100" id="loadSubjectPerfBtn" style="background:var(--primary-color);border:none;">
+                        <i class="fa-solid fa-chart-column me-2"></i>Analyze
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Subject Performance Stats Cards -->
+              <div id="subjectPerfStatsArea" class="row g-3 mb-4 d-none">
+                <div class="col-6 col-md-3">
+                  <div class="card border-0 shadow-sm p-3 text-center" style="border-radius: 10px; background: #f8faff;">
+                    <span class="text-muted small fw-semibold text-uppercase">Average Marks</span>
+                    <h3 class="fw-bold mb-0 text-primary" id="statSubAvgMarks">0.0</h3>
+                    <small class="text-muted" id="statSubTotalMarks">out of 100</small>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="card border-0 shadow-sm p-3 text-center" style="border-radius: 10px; background: #f6fff8;">
+                    <span class="text-muted small fw-semibold text-uppercase">Pass Rate</span>
+                    <h3 class="fw-bold mb-0 text-success" id="statSubPassRate">0%</h3>
+                    <small class="text-muted" id="statSubPassedCount">0 passed</small>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="card border-0 shadow-sm p-3 text-center" style="border-radius: 10px; background: #fff8f8;">
+                    <span class="text-muted small fw-semibold text-uppercase">Failed Students</span>
+                    <h3 class="fw-bold mb-0 text-danger" id="statSubFailedCount">0</h3>
+                    <small class="text-muted">Below passing marks</small>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="card border-0 shadow-sm p-3 text-center" style="border-radius: 10px; background: #fffdf5;">
+                    <span class="text-muted small fw-semibold text-uppercase">Marks Range</span>
+                    <h3 class="fw-bold mb-0 text-warning" id="statSubHighLow">0 / 0</h3>
+                    <small class="text-muted">Highest / Lowest</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Weak / Failed Students in this Subject Table -->
+              <div id="subjectFailedStudentsCard" class="card border-0 shadow-sm d-none" style="border-radius: 12px;">
+                <div class="card-header bg-white py-3 border-0">
+                  <h6 class="fw-bold mb-0 text-danger"><i class="fa-solid fa-triangle-exclamation me-2"></i>Students Requiring Academic Attention in this Subject</h6>
+                </div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-custom align-middle mb-0" id="subjectFailedStudentsTable">
+                      <thead>
+                        <tr>
+                          <th>Roll No</th>
+                          <th>Student Name</th>
+                          <th>Father Name</th>
+                          <th>Obtained Marks</th>
+                          <th>Passing Criteria</th>
+                          <th>Deficit</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- Populated via JS -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANE 5: TEACHERS MANAGEMENT -->
+        <section class="dashboard-pane d-none" id="pane-teachers">
+          <!-- Navigation tabs for teacher controls -->
+          <ul class="nav nav-pills flex-wrap gap-1 mb-4" id="teacherTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="teachers-directory-tab" data-bs-toggle="pill" data-bs-target="#teacher-directory" type="button" role="tab"><i class="fa-solid fa-id-badge me-2"></i>Directory</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="teachers-assignments-tab" data-bs-toggle="pill" data-bs-target="#teacher-assignments" type="button" role="tab"><i class="fa-solid fa-map-location-dot me-2"></i>Assignments</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="teachers-attendance-tab" data-bs-toggle="pill" data-bs-target="#teacher-attendance" type="button" role="tab"><i class="fa-solid fa-calendar-days me-2"></i>Attendance</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="teachers-payroll-tab" data-bs-toggle="pill" data-bs-target="#teacher-payroll" type="button" role="tab"><i class="fa-solid fa-money-check-dollar me-2"></i>Payroll</button>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <!-- Sub-tab 1: Directory -->
+            <div class="tab-pane fade show active" id="teacher-directory" role="tabpanel">
+              <div class="text-end mb-4">
+                <button class="btn btn-primary" style="background: var(--primary-color); border:none;" data-bs-toggle="modal" data-bs-target="#addTeacherModal"><i class="fa-solid fa-user-plus me-2"></i>Register Faculty</button>
+              </div>
+              <div class="table-responsive-custom">
+                <table class="table table-custom align-middle" id="teachersTable">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Faculty Name</th>
+                      <th>Email</th>
+                      <th>Qualification</th>
+                      <th>Salary</th>
+                      <th>Joining Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Populated by admin.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Sub-tab 2: Assignments -->
+            <div class="tab-pane fade" id="teacher-assignments" role="tabpanel">
+              <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                <div class="card-body p-4">
+                  <h5 class="fw-bold mb-3"><i class="fa-solid fa-link me-2 text-primary"></i>Assign Faculty to Class</h5>
+                  <form id="createAssignmentForm" class="row g-3">
+                    <div class="col-md-5">
+                      <label for="assignTeacherSelect" class="form-label">Teacher</label>
+                      <select class="form-select" id="assignTeacherSelect" required>
+                        <option value="" disabled selected>Select Teacher</option>
+                      </select>
+                    </div>
+                    <div class="col-md-5">
+                      <label for="assignClassSelect" class="form-label">Class</label>
+                      <select class="form-select" id="assignClassSelect" required>
+                        <option value="" disabled selected>Select Class</option>
+                      </select>
+                    </div>
+                    <div class="col-md-2 text-end d-flex align-items-end">
+                      <button type="submit" class="btn btn-primary w-100" style="background: var(--primary-color); border:none;"><i class="fa-solid fa-save me-2"></i>Assign Class</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <div class="table-responsive-custom">
+                <table class="table table-custom align-middle" id="assignmentsTable">
+                  <thead>
+                    <tr>
+                      <th>Assignment ID</th>
+                      <th>Faculty Name</th>
+                      <th>Class & Section</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Populated by admin.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Sub-tab 3: Attendance -->
+            <div class="tab-pane fade" id="teacher-attendance" role="tabpanel">
+              <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                <div class="card-body p-4">
+                  <h5 class="fw-bold mb-3"><i class="fa-solid fa-calendar-day me-2 text-primary"></i>Faculty Attendance Registry</h5>
+                  <div class="row g-3 align-items-end">
+                    <div class="col-md-5">
+                      <label for="teacherAttendanceDate" class="form-label">Select Date</label>
+                      <input type="date" class="form-control" id="teacherAttendanceDate" required>
+                    </div>
+                    <div class="col-md-4">
+                      <button class="btn btn-warning w-100" style="background: var(--gold-color); color:white; border:none;" id="loadTeacherAttendanceBtn"><i class="fa-solid fa-spinner me-2"></i>Load / Mark Attendance</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Attendance mark box -->
+              <div id="teacherAttendanceMarkArea" class="d-none">
+                <div class="table-responsive-custom">
+                  <table class="table table-custom align-middle" id="teacherAttendanceMarkTable">
+                    <thead>
+                      <tr>
+                        <th>Faculty Name</th>
+                        <th>Email</th>
+                        <th>Attendance Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- Populated dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+                <div class="text-end mb-4">
+                  <button class="btn btn-success" id="saveTeacherAttendanceBtn"><i class="fa-solid fa-save me-2"></i>Save Attendance Log</button>
+                </div>
+              </div>
+            <!-- Sub-tab 4: Faculty Payroll & Salary -->
+            <div class="tab-pane fade" id="teacher-payroll" role="tabpanel">
+              <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                <div class="card-body p-4">
+                  <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-stretch align-items-md-center mb-3">
+                    <h5 class="fw-bold m-0"><i class="fa-solid fa-file-invoice-dollar text-primary me-2"></i>Monthly Payroll</h5>
+                    <button class="btn btn-warning text-white w-100 w-md-auto" id="btnSyncPayroll" style="background:var(--gold-color); border:none;">
+                      <i class="fa-solid fa-rotate me-2"></i>Generate / Sync Vouchers
+                    </button>
+                  </div>
+                  <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                      <label for="payrollMonthFilter" class="form-label fw-semibold text-muted">Select Salary Month</label>
+                      <select class="form-select" id="payrollMonthFilter">
+                        <option value="January">January</option>
+                        <option value="February">February</option>
+                        <option value="March">March</option>
+                        <option value="April">April</option>
+                        <option value="May">May</option>
+                        <option value="June">June</option>
+                        <option value="July">July</option>
+                        <option value="August" selected>August</option>
+                        <option value="September">September</option>
+                        <option value="October">October</option>
+                        <option value="November">November</option>
+                        <option value="December">December</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="payrollStatusFilter" class="form-label fw-semibold text-muted">Filter Status</label>
+                      <select class="form-select" id="payrollStatusFilter">
+                        <option value="">All Statuses</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Partial">Partial</option>
+                        <option value="Pending">Pending</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <input type="text" class="form-control" id="payrollSearchTeacher" placeholder="Search teacher name...">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="table-responsive-custom">
+                <table class="table table-custom align-middle" id="payrollTable">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Faculty Name</th>
+                      <th>Basic Salary</th>
+                      <th>Paid Amount</th>
+                      <th>Remaining</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Populated dynamically via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANE 6: FEE MANAGEMENT -->
+        <section class="dashboard-pane d-none" id="pane-fees">
+          <div class="mb-4">
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              <button class="btn btn-primary" style="background: var(--primary-color); border:none;" data-bs-toggle="modal" data-bs-target="#feeStructureModal"><i class="fa-solid fa-dollar-sign me-2"></i>Setup Fee Structures</button>
+              <button class="btn btn-warning text-white" style="background: var(--gold-color); border:none;" data-bs-toggle="modal" data-bs-target="#generateFeesModal"><i class="fa-solid fa-gears me-2"></i>Generate Monthly Bills</button>
+            </div>
+            <div class="row g-2">
+              <div class="col-12 col-sm-6 col-md-3">
+                <input type="text" id="feeSearchStudent" class="form-control" placeholder="Search student/roll...">
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <select class="form-select" id="feeFilterClass">
+                  <option value="">All Classes</option>
+                </select>
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <select class="form-select" id="feeFilterMonth">
+                  <option value="">All Months</option>
+                  <option value="January">January</option>
+                  <option value="February">February</option>
+                  <option value="March">March</option>
+                  <option value="April">April</option>
+                  <option value="May">May</option>
+                  <option value="June">June</option>
+                  <option value="July">July</option>
+                  <option value="August" selected>August</option>
+                  <option value="September">September</option>
+                  <option value="October">October</option>
+                  <option value="November">November</option>
+                  <option value="December">December</option>
+                </select>
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <select class="form-select" id="feeFilterStatus">
+                  <option value="">All Statuses</option>
+                  <option value="Paid">Paid</option>
+                  <option value="Partial">Partial</option>
+                  <option value="Pending">Pending</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Class-wise Fee Collection Summary Report -->
+          <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+            <div class="card-header bg-white border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
+              <h5 class="fw-bold m-0 text-dark"><i class="fa-solid fa-square-poll-horizontal me-2 text-warning"></i>Class-wise Fee Collection Summary</h5>
+              <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#classWiseCollapse" aria-expanded="true">
+                <i class="fa-solid fa-chevron-up" id="classWiseCollapseIcon"></i> Toggle Report
+              </button>
+            </div>
+            <div class="collapse show" id="classWiseCollapse">
+              <div class="card-body px-4 pb-4 pt-2">
+                <div class="table-responsive-custom">
+                  <table class="table table-custom align-middle" id="classWiseReportTable">
+                    <thead>
+                      <tr>
+                        <th>Class</th>
+                        <th>Active Students</th>
+                        <th>Expected Collection</th>
+                        <th>Collected Amount</th>
+                        <th>Pending Balance</th>
+                        <th>Collection Rate</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- Populated dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fee Invoices table -->
+          <div class="table-responsive-custom">
+            <table class="table table-custom align-middle" id="feesTable">
+              <thead>
+                <tr>
+                  <th>Roll No</th>
+                  <th>Student Name</th>
+                  <th>Class</th>
+                  <th>Month</th>
+                  <th>Total Fee</th>
+                  <th>Paid Amount</th>
+                  <th>Remaining</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- PANE 7: ANNOUNCEMENTS / NOTICES -->
+        <section class="dashboard-pane d-none" id="pane-notices">
+          <div class="row">
+            <div class="col-lg-5 mb-4">
+              <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                <div class="card-body p-4">
+                  <h5 class="fw-bold mb-3"><i class="fa-solid fa-plus me-2 text-primary"></i>Post Announcement</h5>
+                  <form id="createNoticeForm">
+                    <div class="mb-3">
+                      <label for="noticeTitle" class="form-label">Notice Title</label>
+                      <input type="text" class="form-control" id="noticeTitle" placeholder="e.g. Final Exams Announcement" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="noticeMessage" class="form-label">Message Details</label>
+                      <textarea class="form-control" id="noticeMessage" rows="4" placeholder="Type notice details here..." required></textarea>
+                    </div>
+                    <div class="row">
+                      <div class="col-6 mb-3">
+                        <label for="noticeDate" class="form-label">Post Date</label>
+                        <input type="date" class="form-control" id="noticeDate" required>
+                      </div>
+                      <div class="col-6 mb-3">
+                        <label for="noticeExpiry" class="form-label">Expiry Date</label>
+                        <input type="date" class="form-control" id="noticeExpiry" required>
+                      </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100" style="background: var(--primary-color); border:none;"><i class="fa-solid fa-bullhorn me-2"></i>Publish Notice</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-7 mb-4">
+              <h5 class="fw-bold mb-3"><i class="fa-solid fa-envelope-open-text me-2 text-warning"></i>Active Notice Board History</h5>
+              <div id="noticesArea">
+                <!-- notice cards injected here -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANE 8: SYSTEM BACKUP -->
+        <section class="dashboard-pane d-none" id="pane-backup">
+          <div class="card border-0 shadow-sm text-center p-5" style="border-radius: 12px; max-width: 600px; margin: 2rem auto;">
+            <div class="mb-4">
+              <i class="fa-solid fa-database text-warning" style="font-size: 5rem;"></i>
+            </div>
+            <h4 class="fw-bold">Database SQL Exporter</h4>
+            <p class="text-muted mb-4">
+              Download a complete SQL schema and data export of Waseem Science & Commerce Academy ERP database. This export is fully compatible with MySQL Workbench import utilities.
+            </p>
+            <div class="alert alert-warning text-start" role="alert">
+              <i class="fa-solid fa-triangle-exclamation me-2"></i>
+              <strong>Security Notice:</strong> Only authorized system administrators are allowed to export the database content. Keep this backup file secure as it contains personal credentials and financial data.
+            </div>
+            <div class="mt-3">
+              <button class="btn btn-primary btn-lg" id="exportDatabaseBtn" style="background: var(--primary-color); border:none;"><i class="fa-solid fa-download me-2"></i>Download SQL Backup</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANE 9: SETTINGS / PROFILE -->
+        <section class="dashboard-pane d-none" id="pane-profile">
+          <!-- ACCOUNT SECURITY CARD -->
+          <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; max-width: 650px;">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-3"><i class="fa-solid fa-shield-halved me-2 text-primary"></i>Account Security & Verified Recovery Email</h5>
+              
+              <div class="p-3 bg-light rounded-3 mb-3 border text-start">
+                <div class="mb-3">
+                  <label class="form-label text-muted fw-semibold fs-7 mb-1">Official Login Email (Read-Only)</label>
+                  <div class="d-flex align-items-center">
+                    <input type="text" class="form-control bg-white text-muted fw-semibold" id="accountLoginEmail" readonly value="Loading...">
+                    <span class="badge bg-secondary ms-2 py-2 px-3 flex-shrink-0"><i class="fa-solid fa-lock me-1"></i>Official</span>
+                  </div>
+                  <small class="text-muted fs-7 mt-1 d-block">Used for portal login. Assigned by administration.</small>
+                </div>
+
+                <hr class="my-3">
+
+                <div>
+                  <label class="form-label text-muted fw-semibold fs-7 mb-1">Recovery Email</label>
+                  <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+                    <span id="accountRecoveryEmailDisplay" class="fw-bold text-dark fs-6">No recovery email configured</span>
+                    <span id="accountRecoveryBadge" class="badge bg-warning text-dark"><i class="fa-solid fa-triangle-exclamation me-1"></i>Not Configured</span>
+                  </div>
+                  <small class="text-muted fs-7 d-block mb-3">Your personal email (e.g. Gmail) used to receive verification OTP codes when resetting your password.</small>
+                  
+                  <button class="btn btn-outline-primary btn-sm fw-semibold" id="btnOpenRecoveryModal" data-bs-toggle="modal" data-bs-target="#recoveryEmailModal">
+                    <i class="fa-solid fa-envelope me-1"></i><span id="btnManageRecoveryEmailText">Add Recovery Email</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm" style="border-radius: 12px; max-width: 650px;">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-4"><i class="fa-solid fa-key me-2 text-primary"></i>Change Portal Password</h5>
+              <form id="changePasswordForm">
+                <div class="mb-3">
+                  <label for="currentPassword" class="form-label text-muted fw-semibold">Current Password</label>
+                  <div class="input-group">
+                    <input type="password" class="form-control border-end-0" id="currentPassword" required>
+                    <button class="btn btn-outline-secondary border-start-0 bg-white text-muted" type="button" id="toggleCurrentPassword" style="border: 1px solid #dee2e6;">
+                      <i class="fa-solid fa-eye" id="toggleCurrentPasswordIcon"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="newPassword" class="form-label text-muted fw-semibold">New Password</label>
+                  <div class="input-group">
+                    <input type="password" class="form-control border-end-0" id="newPassword" required>
+                    <button class="btn btn-outline-secondary border-start-0 bg-white text-muted" type="button" id="toggleNewPassword" style="border: 1px solid #dee2e6;">
+                      <i class="fa-solid fa-eye" id="toggleNewPasswordIcon"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <label for="confirmNewPassword" class="form-label text-muted fw-semibold">Confirm New Password</label>
+                  <div class="input-group">
+                    <input type="password" class="form-control border-end-0" id="confirmNewPassword" required>
+                    <button class="btn btn-outline-secondary border-start-0 bg-white text-muted" type="button" id="toggleConfirmNewPassword" style="border: 1px solid #dee2e6;">
+                      <i class="fa-solid fa-eye" id="toggleConfirmNewPasswordIcon"></i>
+                    </button>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="background: var(--primary-color); border:none;"><i class="fa-solid fa-save me-2"></i>Update Password</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- SYSTEM MAINTENANCE & DATA RESET CARD -->
+          <div class="card border-0 shadow-sm border-danger border-2 mt-4" style="border-radius: 12px; max-width: 650px;">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-triangle-exclamation text-danger fs-4 me-2"></i>
+                <h5 class="fw-bold mb-0 text-danger">System Data Reset & Maintenance</h5>
+              </div>
+              <p class="text-muted fs-7 mb-3">
+                Completely erase all operational ERP data (students, teachers, fees, vouchers, attendance, exam results, notices). 
+                An automatic SQL backup will be saved prior to resetting.
+              </p>
+              <div class="alert alert-warning py-2 px-3 fs-7 mb-3">
+                <i class="fa-solid fa-shield-halved me-1"></i><strong>Admin Safety:</strong> Your Admin account will remain active. System will re-seed default classes and session automatically.
+              </div>
+              <button class="btn btn-outline-danger btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#resetSystemDataModal">
+                <i class="fa-solid fa-trash-can me-2"></i>Reset System Data
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODALS SECTION -->
+  
+  <!-- MODAL: STUDENT ADMISSION -->
+  <div class="modal fade" id="studentAdmissionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content modal-content-custom">
+        <div class="modal-header modal-header-custom">
+          <h5 class="modal-title fw-bold"><i class="fa-solid fa-user-plus me-2"></i>Academy Student Admission</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="studentAdmissionForm" enctype="multipart/form-data">
+          <div class="modal-body p-4">
+            <div class="row g-3">
+              <!-- Photo Upload & Demographics -->
+              <div class="col-md-4 text-center border-end pe-3">
+                <label class="form-label d-block text-start text-muted fw-semibold">Profile Photo</label>
+                <div class="mb-3">
+                  <img src="/img/logo.png" id="studentPhotoPreview" class="img-thumbnail rounded-circle mb-2" style="width: 120px; height: 120px; object-fit: cover;">
+                  <input type="file" class="form-control form-control-sm" id="studentPhoto" name="photo" accept="image/*">
+                </div>
+                <div class="mb-3 text-start">
+                  <label for="studentRoll" class="form-label text-muted fw-semibold">Roll Number</label>
+                  <input type="text" class="form-control" id="studentRoll" required>
+                </div>
+              </div>
+
+              <!-- Student Profile Data -->
+              <div class="col-md-8 ps-3">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="studentName" class="form-label text-muted fw-semibold">Student Name</label>
+                    <input type="text" class="form-control" id="studentName" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="studentFather" class="form-label text-muted fw-semibold">Father Name</label>
+                    <input type="text" class="form-control" id="studentFather" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="studentDob" class="form-label text-muted fw-semibold">Date of Birth</label>
+                    <input type="date" class="form-control" id="studentDob" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="studentGender" class="form-label text-muted fw-semibold">Gender</label>
+                    <select class="form-select" id="studentGender" required>
+                      <option value="" disabled selected>Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="studentClassSelect" class="form-label text-muted fw-semibold">Assign Class</label>
+                    <select class="form-select" id="admissionClassSelect" required>
+                      <option value="" disabled selected>Select Class</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="studentAdmissionDate" class="form-label text-muted fw-semibold">Admission Date</label>
+                    <input type="date" class="form-control" id="studentAdmissionDate" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="studentContact" class="form-label text-muted fw-semibold">Mobile Number <span class="text-muted fw-normal fs-7">(Optional)</span></label>
+                    <input type="text" class="form-control" id="studentContact" placeholder="Optional">
+                  </div>
+                  <div class="col-md-6">
+                    <label for="studentBlood" class="form-label text-muted fw-semibold">Blood Group</label>
+                    <input type="text" class="form-control" id="studentBlood" placeholder="e.g. O+">
+                  </div>
+                  <div class="col-12">
+                    <label for="studentAddress" class="form-label text-muted fw-semibold">Home Address</label>
+                    <input type="text" class="form-control" id="studentAddress">
+                  </div>
+                  <div class="col-12">
+                    <label for="studentPrevSchool" class="form-label text-muted fw-semibold">Previous School</label>
+                    <input type="text" class="form-control" id="studentPrevSchool">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Guardian details -->
+              <h6 class="fw-bold border-top pt-3 mt-3 text-primary"><i class="fa-solid fa-users me-2"></i>Guardian & Emergency Information</h6>
+              <div class="col-md-4">
+                <label for="studentGuardianName" class="form-label text-muted fw-semibold">Guardian Name</label>
+                <input type="text" class="form-control" id="studentGuardianName" required>
+              </div>
+              <div class="col-md-4">
+                <label for="studentGuardianPhone" class="form-label text-muted fw-semibold">Guardian Mobile</label>
+                <input type="text" class="form-control" id="studentGuardianPhone" required>
+              </div>
+              <div class="col-md-4">
+                <label for="studentEmergency" class="form-label text-muted fw-semibold">Emergency Number</label>
+                <input type="text" class="form-control" id="studentEmergency" required>
+              </div>
+
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" style="background: var(--primary-color); border:none;"><i class="fa-solid fa-user-plus me-2"></i>Admit Student</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ACADEMIC JOURNEY & CAREER TIMELINE -->
+  <div class="modal fade" id="academicJourneyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content border-0 shadow" style="border-radius: 15px;">
+        <div class="modal-header text-white" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); border-top-left-radius: 15px; border-top-right-radius: 15px;">
+          <h5 class="modal-title fw-bold"><i class="fa-solid fa-graduation-cap me-2 text-warning"></i>Student Academic Journey & Career Timeline</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4 bg-light">
+          <!-- Student Bio Header -->
+          <div class="card border-0 shadow-sm mb-4 bg-white p-3" style="border-radius: 10px;">
+            <div class="d-flex flex-column flex-md-row align-items-center gap-4">
+              <img id="journeyStudentAvatar" src="/img/logo.png" alt="Student Photo" class="rounded-circle border border-3 border-primary" style="width: 80px; height: 80px; object-fit: cover;">
+              <div class="flex-grow-1 text-center text-md-start">
+                <h4 class="fw-bold text-dark mb-1" id="journeyStudentName">Student Name</h4>
+                <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start text-muted small">
+                  <span><i class="fa-solid fa-id-card me-1 text-primary"></i>Roll: <strong id="journeyStudentRoll" class="text-dark">-</strong></span>
+                  <span><i class="fa-solid fa-hashtag me-1 text-primary"></i>Reg: <strong id="journeyStudentReg" class="text-dark">-</strong></span>
+                  <span><i class="fa-solid fa-user me-1 text-primary"></i>Father: <strong id="journeyStudentFather" class="text-dark">-</strong></span>
+                  <span><i class="fa-solid fa-calendar me-1 text-primary"></i>Admitted: <strong id="journeyStudentAdmissionDate" class="text-dark">-</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Academic Journey Timeline Area -->
+          <div class="card border-0 shadow-sm bg-white p-4" style="border-radius: 12px;">
+            <h6 class="fw-bold mb-4 text-primary border-bottom pb-2">
+              <i class="fa-solid fa-timeline me-2"></i>Chronological Academic Progression
+            </h6>
+            <div id="journeyTimelineContainer">
+              <!-- Populated dynamically by admin.js -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-white">
+          <button type="button" class="btn btn-secondary fw-semibold" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PROMOTION SAFETY CONFIRMATION -->
+  <div class="modal fade" id="promotionConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow" style="border-radius: 15px;">
+        <div class="modal-header bg-success text-white" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
+          <h5 class="modal-title fw-bold"><i class="fa-solid fa-shield-halved me-2"></i>Confirm Student Promotion</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p class="text-muted mb-3">You are about to execute a bulk promotion with the following specifications:</p>
+          <div class="bg-light p-3 rounded border mb-3">
+            <div class="row g-2 small">
+              <div class="col-6">
+                <span class="text-muted">Source Session:</span>
+                <div class="fw-bold text-dark" id="confirmSourceSession">-</div>
+              </div>
+              <div class="col-6">
+                <span class="text-muted">Source Class:</span>
+                <div class="fw-bold text-dark" id="confirmSourceClass">-</div>
+              </div>
+              <div class="col-6 border-top pt-2 mt-2">
+                <span class="text-muted">Target Session:</span>
+                <div class="fw-bold text-primary" id="confirmTargetSession">-</div>
+              </div>
+              <div class="col-6 border-top pt-2 mt-2">
+                <span class="text-muted">Target Class:</span>
+                <div class="fw-bold text-primary" id="confirmTargetClass">-</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center p-3 bg-success-subtle rounded border border-success mb-3">
+            <span class="fw-semibold text-success-emphasis">Total Students to Promote:</span>
+            <span class="badge bg-success fs-6" id="confirmTotalCount">0</span>
+          </div>
+
+          <div class="alert alert-warning py-2 mb-0 small">
+            <i class="fa-solid fa-triangle-exclamation me-1"></i>
+            Historical records will be preserved safely. Source enrollments will be updated to <strong>Promoted</strong> and new <strong>Active</strong> enrollments will be created in the target session.
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-success fw-bold" id="btnConfirmAndExecutePromotion">
+            <span id="btnConfirmPromoText"><i class="fa-solid fa-check me-2"></i>Yes, Execute Promotion</span>
+            <span id="btnConfirmPromoSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / REGISTER TEACHER -->
+  <div class="modal fade" id="addTeacherModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-content-custom">
+        <div class="modal-header modal-header-custom">
+          <h5 class="modal-title fw-bold"><i class="fa-solid fa-user-plus me-2"></i>Register Faculty Profile</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="createTeacherForm">
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label for="teacherNameInput" class="form-label text-muted fw-semibold">Faculty Name</label>
+              <input type="text" class="form-control" id="teacherNameInput" required>
+            </div>
+            <div class="mb-3">
+              <label for="teacherEmailInput" class="form-label text-muted fw-semibold">Email Address</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="teacherEmailInput" placeholder="teachername" required>
+                <span class="input-group-text bg-light text-muted fw-semibold" style="font-size:0.9rem;">@waseem.edu.pk</span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="teacherPasswordInput" class="form-label text-muted fw-semibold">Password</label>
+              <div class="input-group">
+                <input type="password" class="form-control border-end-0" id="teacherPasswordInput" required>
+                <button class="btn btn-outline-secondary border-start-0 bg-white text-muted" type="button" id="toggleTeacherPassword" style="border: 1px solid #dee2e6;">
+                  <i class="fa-solid fa-eye" id="toggleTeacherPasswordIcon"></i>
+                </button>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="teacherQualification" class="form-label text-muted fw-semibold">Qualification</label>
+              <input type="text" class="form-control" id="teacherQualification" placeholder="e.g. M.Sc. Physics" required>
+            </div>
+            <div class="row">
+              <div class="col-6 mb-3">
+                <label for="teacherSalary" class="form-label text-muted fw-semibold">Salary (PKR)</label>
+                <input type="number" class="form-control" id="teacherSalary" required>
+              </div>
+              <div class="col-6 mb-3">
+                <label for="teacherJoining" class="form-label text-muted fw-semibold">Joining Date</label>
+                <input type="date" class="form-control" id="teacherJoining" required>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" style="background: var(--primary-color); border:none;"><i class="fa-solid fa-save me-2"></i>Save Faculty Profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: FEE STRUCTURE SETUP -->
+  <div class="modal fade" id="feeStructureModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-content-custom">
+        <div class="modal-header modal-header-custom">
+          <h5 class="modal-title fw-bold"><i class="fa-solid fa-file-invoice-dollar me-2"></i>Configure Class Fee Structures</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="feeStructureForm">
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label for="feeStructClass" class="form-label text-muted fw-semibold">Class Grade</label>
+              <select class="form-select" id="feeStructClass" required>
+                <option value="" disabled selected>Select Class</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="feeStructSession" class="form-label text-muted fw-semibold">Academic Year</label>
+              <select class="form-select" id="feeStructSession" required>
+                <option value="" disabled selected>Select Session</option>
+              </select>
+            </div>
+            <div class="row">
+              <div class="col-6 mb-3">
+                <label for="feeStructMonthly" class="form-label text-muted fw-semibold">Monthly Tuition Fee</label>
+                <input type="number" class="form-control" id="feeStructMonthly" value="0" required>
+              </div>
+              <div class="col-6 mb-3">
+                <label for="feeStructAdmission" class="form-label text-muted fw-semibold">Admission Fee</label>
+                <input type="number" class="form-control" id="feeStructAdmission" value="0" required>
+              </div>
+              <div class="col-6 mb-3">
+                <label for="feeStructExam" class="form-label text-muted fw-semibold">Examination Fee</label>
+                <input type="number" class="form-control" id="feeStructExam" value="0" required>
+              </div>
+              <div class="col-6 mb-3">
+                <label for="feeStructOther" class="form-label text-muted fw-semibold">Other Charges</label>
+                <input type="number" class="form-control" id="feeStructOther" value="0" required>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" style="background: var(--primary-color); border:none;"><i class="fa-solid fa-check me-2"></i>Save Fee Configuration</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: GENERATE MONTHLY VOUCHERS -->
+  <div class="modal fade" id="generateFeesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-content-custom">
+        <div class="modal-header modal-header-custom" style="background: var(--gold-color);">
+          <h5 class="modal-title fw-bold text-white"><i class="fa-solid fa-gears me-2"></i>Bulk Generate Student Bills</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="generateFeesForm">
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label for="generateFeeClass" class="form-label text-muted fw-semibold">Select Class</label>
+              <select class="form-select" id="generateFeeClass" required>
+                <option value="" disabled selected>Select Class</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="generateFeeSession" class="form-label text-muted fw-semibold">Academic Session</label>
+              <select class="form-select" id="generateFeeSession" required>
+                <option value="" disabled selected>Select Session</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="generateFeeMonth" class="form-label text-muted fw-semibold">Fee Month</label>
+              <select class="form-select" id="generateFeeMonth" required>
+                <option value="" disabled selected>Select Month</option>
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+                <option value="June">June</option>
+                <option value="July">July</option>
+                <option value="August">August</option>
+                <option value="September">September</option>
+                <option value="October">October</option>
+                <option value="November">November</option>
+                <option value="December">December</option>
+              </select>
+            </div>
+            <div class="mb-3 border rounded p-3 bg-light">
+              <h6 class="fw-bold mb-2">Optional Charges to Include</h6>
+              <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" role="switch" id="includeAdmissionCharge">
+                <label class="form-check-label" for="includeAdmissionCharge">Include Admission Fee (for new students)</label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="includeExamCharge">
+                <label class="form-check-label" for="includeExamCharge">Include Examination Fee</label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" style="background: var(--primary-color); border:none;"><i class="fa-solid fa-bolt me-2"></i>Generate Vouchers</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- ChartJS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Mark Teacher Attendance Modal -->
+  <div class="modal fade" id="markTeacherAttendanceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content modal-content-custom">
+        <div class="modal-header modal-header-custom" style="background: var(--gold-color);">
+          <h5 class="modal-title fw-bold text-white"><i class="fa-solid fa-clipboard-user me-2"></i>Mark Daily Teacher Attendance</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="markTeacherAttendanceForm">
+            <div class="mb-4">
+              <label for="teacherAttDate" class="form-label text-muted fw-semibold">Attendance Date</label>
+              <input type="date" class="form-control" id="teacherAttDate" required>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-bordered align-middle" id="markTeacherAttTable">
+                <thead>
+                  <tr>
+                    <th>Teacher Name</th>
+                    <th class="text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Filled via JS -->
+                </tbody>
+              </table>
+            </div>
+            <button type="submit" class="btn btn-warning w-100 text-white mt-3" style="background: var(--gold-color); border:none;"><i class="fa-solid fa-save me-2"></i>Save Attendance</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pay Teacher Salary Modal -->
+  <div class="modal fade" id="payTeacherSalaryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content modal-content-custom">
+        <div class="modal-header modal-header-custom" style="background: var(--primary-color);">
+          <h5 class="modal-title fw-bold text-white"><i class="fa-solid fa-money-bill-wave me-2"></i>Pay Teacher Salary</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="row">
+            <div class="col-md-6 border-end">
+              <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-cash-register me-1"></i>Record Salary Payment</h6>
+              <form id="payTeacherSalaryForm">
+                <input type="hidden" id="salaryRecordId">
+                <input type="hidden" id="salaryTeacherId">
+                <div class="mb-3">
+                  <label class="form-label text-muted fw-semibold">Faculty Member</label>
+                  <input type="text" class="form-control fw-bold" id="salaryTeacherName" disabled>
+                </div>
+                <div class="mb-3">
+                  <label for="salaryPaymentDate" class="form-label text-muted fw-semibold">Payment Date</label>
+                  <input type="date" class="form-control" id="salaryPaymentDate" required>
+                </div>
+                <div class="mb-3">
+                  <label for="salaryPaymentMethod" class="form-label text-muted fw-semibold">Payment Method</label>
+                  <select class="form-select" id="salaryPaymentMethod" required>
+                    <option value="Cash" selected>Cash</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Check">Check</option>
+                    <option value="Card">Card</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="salaryAmount" class="form-label text-muted fw-semibold">Amount Paid (PKR)</label>
+                  <input type="number" step="0.01" min="0.01" class="form-control" id="salaryAmount" placeholder="e.g. 50000" required>
+                </div>
+                <div class="mb-3">
+                  <label for="salaryNotes" class="form-label text-muted fw-semibold">Notes / Receipt Reference</label>
+                  <input type="text" class="form-control" id="salaryNotes" placeholder="e.g. Full August salary, Check #1024">
+                </div>
+                <button type="submit" class="btn btn-primary w-100" style="background: var(--primary-color); border:none;"><i class="fa-solid fa-check-circle me-2"></i>Submit Salary Payment</button>
+              </form>
+            </div>
+            <div class="col-md-6 ps-md-4">
+              <h6 class="fw-bold mb-3 text-success"><i class="fa-solid fa-receipt me-1"></i>Voucher Status & Payments</h6>
+              <div class="mb-3 bg-light p-3 rounded">
+                <div class="row fs-7 mb-1"><span class="col-6 text-muted">Voucher Month:</span><span class="col-6 fw-bold" id="modalSalaryMonth">-</span></div>
+                <div class="row fs-7 mb-1"><span class="col-6 text-muted">Basic Salary:</span><span class="col-6 fw-bold text-dark" id="modalSalaryBasic">-</span></div>
+                <div class="row fs-7 mb-1"><span class="col-6 text-muted">Total Paid:</span><span class="col-6 text-success fw-bold" id="modalSalaryPaid">-</span></div>
+                <div class="row fs-7"><span class="col-6 text-muted">Remaining Due:</span><span class="col-6 text-danger fw-bold" id="modalSalaryRemaining">-</span></div>
+              </div>
+              <h6 class="fw-bold mb-2 fs-7 text-muted">Transaction History</h6>
+              <div style="max-height: 200px; overflow-y: auto;">
+                <table class="table table-sm fs-7 table-striped align-middle" id="teacherSalaryHistoryTable">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Amount</th>
+                      <th>Method</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teacher Multi-Month Salary History Modal -->
+  <div class="modal fade" id="teacherSalaryHistoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content modal-content-custom">
+        <div class="modal-header modal-header-custom" style="background: var(--primary-color);">
+          <h5 class="modal-title fw-bold text-white"><i class="fa-solid fa-history me-2"></i>Faculty Salary History — <span id="historyTeacherName">Teacher</span></h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle fs-7" id="multiMonthHistoryTable">
+              <thead class="table-dark">
+                <tr>
+                  <th>Month</th>
+                  <th>Session</th>
+                  <th>Basic Salary</th>
+                  <th>Paid Amount</th>
+                  <th>Remaining</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Record Payment & History Modal -->
+  <div class="modal fade" id="recordPaymentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content modal-content-custom">
+        <div class="modal-header modal-header-custom" style="background: var(--primary-color);">
+          <h5 class="modal-title fw-bold text-white"><i class="fa-solid fa-cash-register me-2"></i>Record Payment & History</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="row">
+            <!-- Left Column: Record New Payment -->
+            <div class="col-md-6 border-end">
+              <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-plus-circle me-1"></i>New Transaction</h6>
+              <form id="recordPaymentForm">
+                <input type="hidden" id="recordPaymentFeeId">
+                <div class="mb-3">
+                  <label class="form-label text-muted fw-semibold">Amount Paid (PKR)</label>
+                  <input type="number" class="form-control" id="recordPaymentAmount" required min="0.01" step="0.01">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label text-muted fw-semibold">Payment Date</label>
+                  <input type="date" class="form-control" id="recordPaymentDate" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label text-muted fw-semibold">Payment Method</label>
+                  <select class="form-select" id="recordPaymentMethod" required>
+                    <option value="Cash">Cash</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Check">Check</option>
+                    <option value="Card">Card</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label text-muted fw-semibold">Notes</label>
+                  <textarea class="form-control" id="recordPaymentNotes" rows="2" placeholder="e.g. Paid online, parent copy issued"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100" style="background: var(--primary-color); border: none;">Save Payment</button>
+              </form>
+            </div>
+            <!-- Right Column: Payment History & Info -->
+            <div class="col-md-6 ps-md-4">
+              <h6 class="fw-bold mb-3 text-success"><i class="fa-solid fa-history me-1"></i>Voucher Status & History</h6>
+              <div class="mb-3 bg-light p-3 rounded">
+                <div class="row fs-7 mb-1"><span class="col-6 text-muted">Student:</span><span class="col-6 fw-bold" id="recordPaymentStudentName">-</span></div>
+                <div class="row fs-7 mb-1"><span class="col-6 text-muted">Voucher Month:</span><span class="col-6 fw-semibold" id="recordPaymentMonth">-</span></div>
+                <div class="row fs-7 mb-1"><span class="col-6 text-muted">Total Fee:</span><span class="col-6 fw-bold text-dark" id="recordPaymentTotal">-</span></div>
+                <div class="row fs-7 mb-1"><span class="col-6 text-muted">Total Paid:</span><span class="col-6 text-success fw-bold" id="recordPaymentPaid">-</span></div>
+                <div class="row fs-7"><span class="col-6 text-muted">Remaining Balance:</span><span class="col-6 text-danger fw-bold" id="recordPaymentRemaining">-</span></div>
+              </div>
+              <div style="max-height: 200px; overflow-y: auto;">
+                <table class="table table-sm table-striped fs-7 align-middle" id="paymentHistoryTable">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Amount</th>
+                      <th>Method</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Filled dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Student Custom Fee Modal -->
+  <div class="modal fade" id="editCustomFeeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-content-custom">
+        <div class="modal-header modal-header-custom" style="background: var(--primary-color);">
+          <h5 class="modal-title fw-bold text-white"><i class="fa-solid fa-user-pen me-2"></i>Edit Student Monthly Fee</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="editCustomFeeForm">
+          <div class="modal-body p-4">
+            <input type="hidden" id="editCustomFeeStudentId">
+            <div class="mb-3 bg-light p-3 rounded">
+              <div class="row mb-1"><span class="col-6 text-muted">Student:</span><span class="col-6 fw-bold" id="editCustomFeeStudentName">-</span></div>
+              <div class="row mb-1"><span class="col-6 text-muted">Class:</span><span class="col-6 fw-semibold" id="editCustomFeeClass">-</span></div>
+              <div class="row"><span class="col-6 text-muted">Class Default Fee:</span><span class="col-6 fw-bold text-dark" id="editCustomFeeClassDefault">-</span></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted fw-semibold">Custom Monthly Fee (PKR)</label>
+              <input type="number" class="form-control" id="editCustomFeeAmount" placeholder="e.g. 5000">
+              <div class="form-text">Leave blank to use the default class fee. When class fee changes, students without a custom fee will follow the new default class fee automatically.</div>
+            </div>
+            <div class="form-check form-switch mt-3">
+              <input class="form-check-input" type="checkbox" role="switch" id="editCustomFeeUpdateCurrent" checked>
+              <label class="form-check-label text-muted fw-semibold" for="editCustomFeeUpdateCurrent">Recalculate unpaid voucher for the current month</label>
+            </div>
+          </div>
+          <div class="modal-footer border-0">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" style="background: var(--primary-color); border: none;">Save Fee Override</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIGURE VERIFIED RECOVERY EMAIL -->
+  <div class="modal fade" id="recoveryEmailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-content-custom">
+        <div class="modal-header modal-header-custom" style="background: var(--primary-color);">
+          <h5 class="modal-title fw-bold text-white"><i class="fa-solid fa-shield-halved me-2"></i>Configure Recovery Email</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <!-- Alert -->
+          <div id="recoveryModalAlert" class="alert d-none text-start" role="alert">
+            <span id="recoveryModalAlertMsg"></span>
+          </div>
+
+          <!-- Step 1: Input Recovery Email -->
+          <div id="recStepInput">
+            <p class="text-muted fs-7 mb-3">
+              Enter your personal email address (e.g. Gmail). We will send a 6-digit verification code to confirm ownership.
+            </p>
+            <div class="mb-3">
+              <label for="inputNewRecoveryEmail" class="form-label fw-semibold text-muted fs-7">Personal Recovery Email</label>
+              <div class="input-group">
+                <span class="input-group-text bg-white"><i class="fa-solid fa-envelope text-muted"></i></span>
+                <input type="email" class="form-control" id="inputNewRecoveryEmail" placeholder="yourname@gmail.com" required>
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary w-100 fw-semibold" id="btnSendRecoveryOtp" style="background: var(--primary-color); border:none;">
+              <span id="btnSendRecText"><i class="fa-solid fa-paper-plane me-2"></i>Send Verification Code</span>
+              <span id="btnSendRecSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+            </button>
+          </div>
+
+          <!-- Step 2: Verify OTP Code -->
+          <div id="recStepVerify" class="d-none">
+            <p class="text-muted fs-7 mb-3">
+              Enter the 6-digit verification code sent to <strong id="recTargetEmailDisplay" class="text-dark"></strong>.
+            </p>
+            <div class="mb-3">
+              <label for="inputRecoveryOtp" class="form-label fw-semibold text-muted fs-7">6-Digit Verification Code</label>
+              <input type="text" maxlength="6" class="form-control text-center fw-bold fs-4 border-2" id="inputRecoveryOtp" placeholder="123456" style="letter-spacing: 8px;">
+            </div>
+            <button type="button" class="btn btn-success w-100 fw-semibold mb-2" id="btnConfirmRecoveryOtp">
+              <span id="btnConfirmRecText"><i class="fa-solid fa-circle-check me-2"></i>Verify & Save Recovery Email</span>
+              <span id="btnConfirmRecSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+            </button>
+            <button type="button" class="btn btn-link btn-sm text-decoration-none w-100 text-muted" id="btnRecBackToInput">
+              <i class="fa-solid fa-pen me-1"></i>Change Email Address
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Admin View / Mark Class Daily Attendance -->
+  <div class="modal fade" id="adminClassDayAttendanceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow" style="border-radius: 15px;">
+        <div class="modal-header bg-primary text-white" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
+          <h5 class="modal-title fw-bold" id="adminClassDayModalTitle"><i class="fa-solid fa-clipboard-user me-2"></i>Class Attendance Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <div>
+              <span class="text-muted me-2">Date:</span><strong id="modalAttDateText" class="text-dark">-</strong> | 
+              <span class="text-muted ms-2 me-2">Class:</span><strong id="modalAttClassText" class="text-primary">-</strong>
+            </div>
+            <div id="modalAttStatusBadge"></div>
+          </div>
+          <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+            <table class="table table-custom align-middle" id="modalClassDayAttTable">
+              <thead>
+                <tr>
+                  <th>Roll No</th>
+                  <th>Student Name</th>
+                  <th>Father Name</th>
+                  <th>Attendance Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success fw-bold" id="btnSaveModalAttendance">
+            <i class="fa-solid fa-save me-2"></i>Save / Update Attendance
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADMIN EDIT / REVIEW RESULT MARKS -->
+  <div class="modal fade" id="adminEditResultModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow" style="border-radius: 15px;">
+        <div class="modal-header bg-primary text-white" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
+          <h5 class="modal-title fw-bold" id="adminEditResultModalTitle"><i class="fa-solid fa-pen-to-square me-2"></i>Review & Edit Student Marks</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <div>
+              <span class="text-muted me-2">Student:</span><strong id="modalResStudentName" class="text-dark">-</strong> | 
+              <span class="text-muted ms-2 me-2">Roll #:</span><strong id="modalResRollNumber" class="text-dark">-</strong> | 
+              <span class="text-muted ms-2 me-2">Class:</span><strong id="modalResClassName" class="text-primary">-</strong>
+            </div>
+            <div id="modalResStatusBadge"></div>
+          </div>
+          <div class="table-responsive mb-3" style="max-height: 350px; overflow-y: auto;">
+            <table class="table table-custom align-middle" id="modalEditSubjectsTable">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th class="text-center">Total Marks</th>
+                  <th class="text-center">Passing Marks</th>
+                  <th style="width: 160px;">Obtained Marks</th>
+                  <th class="text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+          <div class="mb-3">
+            <label class="form-label text-muted fw-semibold">Teacher Remarks / Notes</label>
+            <input type="text" class="form-control" id="modalResRemarks" placeholder="Enter academic feedback or remarks...">
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary fw-bold" id="btnSaveAdminResultEdit">
+            <i class="fa-solid fa-save me-2"></i>Save Marks & Recalculate
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: RESULT CARD VIEWER & SINGLE PRINT -->
+  <div class="modal fade" id="adminResultCardModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow" style="border-radius: 15px;">
+        <div class="modal-header bg-dark text-white" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
+          <h5 class="modal-title fw-bold"><i class="fa-solid fa-id-card me-2 text-warning"></i>Official Result Card</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4" id="adminPrintableCardContainer">
+          <!-- Dynamically populated printable card layout -->
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary fw-bold" id="btnPrintCardModalAction">
+            <i class="fa-solid fa-print me-2"></i>Print Result Card
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SYSTEM DATA RESET -->
+  <div class="modal fade" id="resetSystemDataModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-content-custom border-danger">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation me-2"></i>Reset All Application Data</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="resetSystemDataForm">
+          <div class="modal-body p-4">
+            <div class="alert alert-danger mb-3" role="alert">
+              <i class="fa-solid fa-radiation me-2 fs-5"></i>
+              <strong>WARNING:</strong> This action will permanently wipe all ERP data tables including students, faculty, fees, and marks records. An automatic backup will be created before deletion.
+            </div>
+
+            <div id="resetModalAlert" class="alert d-none text-start" role="alert">
+              <span id="resetModalAlertMsg"></span>
+            </div>
+
+            <div class="mb-3">
+              <label for="inputConfirmResetText" class="form-label text-muted fw-semibold fs-7">
+                Type <strong class="text-danger">RESET</strong> to confirm:
+              </label>
+              <input type="text" class="form-control fw-bold border-2" id="inputConfirmResetText" placeholder="RESET" required autocomplete="off">
+            </div>
+
+            <div class="mb-3">
+              <label for="inputAdminResetPassword" class="form-label text-muted fw-semibold fs-7">
+                Enter Admin Password to Authorize:
+              </label>
+              <input type="password" class="form-control" id="inputAdminResetPassword" placeholder="••••••••" required>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger fw-bold" id="btnConfirmSystemReset">
+              <span id="btnResetConfirmText"><i class="fa-solid fa-trash-arrow-up me-2"></i>Confirm & Erase System Data</span>
+              <span id="btnResetConfirmSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client-Side Admin Logic -->
+  <script src="/js/admin.js"></script>
+</body>
+</html>

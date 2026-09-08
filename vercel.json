@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://waseem-erp-backend.up.railway.app/api/$1" },
+    { "source": "/uploads/(.*)", "destination": "https://waseem-erp-backend.up.railway.app/uploads/$1" },
+    { "source": "/(.*)", "destination": "/$1" }
+  ]
+}

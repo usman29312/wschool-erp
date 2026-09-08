@@ -1,0 +1,23 @@
+{
+  "name": "wschool-erp",
+  "version": "1.0.0",
+  "description": "School Management System ERP for Waseem Science & Commerce Academy",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.9.7",
+    "nodemailer": "^9.0.5",
+    "sequelize": "^6.37.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "private": true
+}
