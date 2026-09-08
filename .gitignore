@@ -1,4 +1,4 @@
-node_modules/
+﻿node_modules/
 .env
 wschool_backup.sql
 .DS_Store
