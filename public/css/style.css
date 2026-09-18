@@ -72,6 +72,9 @@ h1, h2, h3, h4, h5, h6 {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  text-align: right;
   gap: 0.75rem;
   overflow: hidden;
 }
@@ -118,12 +121,15 @@ h1, h2, h3, h4, h5, h6 {
 .sidebar-menu li a {
   display: flex;
   align-items: center;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  text-align: right;
   gap: 1rem;
   padding: 0.85rem 1.5rem;
   color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
   transition: all 0.2s ease;
-  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
   white-space: nowrap;
 }
 
@@ -137,13 +143,13 @@ h1, h2, h3, h4, h5, h6 {
 .sidebar-menu li.active a {
   color: #FFFFFF;
   background: rgba(255, 255, 255, 0.08);
-  border-left-color: var(--gold-color);
+  border-right-color: var(--gold-color);
 }
 
 .sidebar.collapsed .sidebar-menu li a {
   padding: 0.85rem 0;
   justify-content: center;
-  border-left: none;
+  border-right: none;
 }
 
 .sidebar.collapsed .sidebar-menu li a span {
@@ -158,6 +164,9 @@ h1, h2, h3, h4, h5, h6 {
 .sidebar-footer a {
   display: flex;
   align-items: center;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  text-align: right;
   gap: 1rem;
   color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
