@@ -691,6 +691,11 @@
                     <i class="fa-solid fa-user-clock me-2 text-info"></i>Student History
                   </button>
                 </li>
+                <li class="nav-item" role="presentation">
+                  <button class="nav-link fw-bold" id="subtab-reports-btn" data-bs-toggle="tab" data-bs-target="#subtab-reports" type="button" role="tab">
+                    <i class="fa-solid fa-file-chart-column me-2 text-warning"></i>Attendance Reports / Summary
+                  </button>
+                </li>
               </ul>
 
               <div class="tab-content" id="studentAttendanceSubTabsContent">
@@ -923,6 +928,70 @@
                             </tbody>
                           </table>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 4. ATTENDANCE REPORTS & ANALYTICS SUMMARY SUB-TAB -->
+                <div class="tab-pane fade" id="subtab-reports" role="tabpanel">
+                  <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                    <div class="card-body p-3 p-md-4">
+                      <div class="row g-3 align-items-end">
+                        <div class="col-12 col-sm-6 col-md-3">
+                          <label class="form-label text-muted fw-semibold">Role / Entity</label>
+                          <select class="form-select" id="reportAttRoleSelect">
+                            <option value="Student" selected>Student</option>
+                            <option value="Teacher">Teacher / Faculty</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-3" id="reportAttClassCol">
+                          <label class="form-label text-muted fw-semibold">Select Class</label>
+                          <select class="form-select" id="reportAttClassSelect">
+                            <option value="">-- Choose Class --</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-3">
+                          <label class="form-label text-muted fw-semibold">Select Month</label>
+                          <input type="month" class="form-control" id="reportAttMonthSelect">
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-3">
+                          <button class="btn btn-primary w-100" id="btnLoadAttReportGrid" style="background:var(--primary-color);border:none;">
+                            <i class="fa-solid fa-chart-grid me-2"></i>Generate Monthly Grid
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Report Action Bar (Export PDF / Excel) -->
+                  <div id="reportAttHeaderArea" class="d-none mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                      <h6 class="fw-bold mb-0 text-dark" id="reportGridTitle">Monthly Attendance Summary Grid</h6>
+                      <small class="text-muted" id="reportGridSubtitle">Green = Present (P) | Red = Absent (A) | Yellow = Leave (L)</small>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-outline-danger fw-semibold" id="btnExportAttPDF">
+                        <i class="fa-solid fa-file-pdf me-1"></i>Export PDF
+                      </button>
+                      <button class="btn btn-sm btn-outline-success fw-semibold" id="btnExportAttExcel">
+                        <i class="fa-solid fa-file-excel me-1"></i>Export Excel (CSV)
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Monthly Grid Table Card -->
+                  <div id="reportAttTableArea" class="card border-0 shadow-sm d-none" style="border-radius: 12px;">
+                    <div class="card-body p-0">
+                      <div class="table-responsive" id="reportAttTableContainer">
+                        <table class="table table-bordered align-middle text-center mb-0" id="reportAttGridTable" style="font-size: 0.82rem;">
+                          <thead class="table-light">
+                            <!-- Populated dynamically via JS -->
+                          </thead>
+                          <tbody>
+                            <!-- Populated dynamically via JS -->
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
@@ -1569,6 +1638,31 @@
               </div>
             <!-- Sub-tab 4: Faculty Payroll & Salary -->
             <div class="tab-pane fade" id="teacher-payroll" role="tabpanel">
+              <!-- Payroll Summary Cards -->
+              <div class="row g-3 mb-4">
+                <div class="col-12 col-md-4">
+                  <div class="card border-0 shadow-sm text-center p-3" style="border-radius: 10px; background: #f8faff;">
+                    <span class="text-muted small fw-semibold text-uppercase">Total Monthly Salary</span>
+                    <h3 class="fw-bold mb-0 text-primary" id="cardPayrollTotalDue">PKR 0</h3>
+                    <small class="text-muted">Total basic payroll budget</small>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="card border-0 shadow-sm text-center p-3" style="border-radius: 10px; background: #f6fff8;">
+                    <span class="text-muted small fw-semibold text-uppercase">Amount Paid</span>
+                    <h3 class="fw-bold mb-0 text-success" id="cardPayrollTotalPaid">PKR 0</h3>
+                    <small class="text-muted">Disbursed salaries</small>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="card border-0 shadow-sm text-center p-3" style="border-radius: 10px; background: #fff8f8;">
+                    <span class="text-muted small fw-semibold text-uppercase">Remaining Payable</span>
+                    <h3 class="fw-bold mb-0 text-danger" id="cardPayrollTotalRemaining">PKR 0</h3>
+                    <small class="text-muted">Pending salary balance</small>
+                  </div>
+                </div>
+              </div>
+
               <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
                 <div class="card-body p-4">
                   <div class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-stretch align-items-md-center mb-3">
@@ -2711,6 +2805,8 @@
     </div>
   </div>
 
+  <!-- html2pdf.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <!-- Client-Side Admin Logic -->
   <script src="/js/admin.js"></script>
 </body>

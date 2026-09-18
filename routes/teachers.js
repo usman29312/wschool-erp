@@ -380,6 +380,63 @@ router.get('/attendance/summary', isAuthenticated, isAdmin, async (req, res) => 
   }
 });
 
+// GET Teacher Attendance Monthly Grid (Day-by-Day 1..31)
+router.get('/attendance/monthly-grid', isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    const { month, academicYearId } = req.query;
+    if (!month || !academicYearId) {
+      return res.status(400).json({ error: 'Please specify month (YYYY-MM) and academicYearId.' });
+    }
+
+    const startDate = `${month}-01`;
+    const [yr, mo] = month.split('-').map(Number);
+    const endDate = new Date(yr, mo, 0).toISOString().substring(0, 10);
+
+    const logs = await TeacherAttendance.findAll({
+      where: {
+        academic_year_id: academicYearId,
+        date: { [Op.between]: [startDate, endDate] }
+      },
+      attributes: ['teacher_id', 'date', 'status'],
+      order: [['date', 'ASC']]
+    });
+
+    const datesSet = new Set(logs.map(l => l.date));
+    const dates = Array.from(datesSet).sort();
+
+    const teachers = await Teacher.findAll({
+      include: [{ model: User, attributes: ['name', 'email'] }],
+      order: [[User, 'name', 'ASC']]
+    });
+
+    const list = teachers.map(t => {
+      const record = {};
+      let present = 0, absent = 0, leave = 0;
+      logs.filter(l => l.teacher_id === t.id).forEach(l => {
+        record[l.date] = l.status;
+        if (l.status === 'Present') present++;
+        else if (l.status === 'Absent') absent++;
+        else if (l.status === 'Leave') leave++;
+      });
+      const activeDays = present + absent;
+      const percentage = activeDays > 0 ? Math.round((present / activeDays) * 100) : (dates.length > 0 ? 0 : 100);
+
+      return {
+        id: t.id,
+        name: t.User ? t.User.name : 'Unknown',
+        email: t.User ? t.User.email : '',
+        record,
+        summary: { present, absent, leave, percentage, activeDays }
+      };
+    });
+
+    return res.json({ teachers: list, dates });
+  } catch (error) {
+    console.error('Teacher monthly grid error:', error);
+    return res.status(500).json({ error: 'Failed to load teacher monthly grid.' });
+  }
+});
+
 // POST Mark Teacher Attendance (Bulk)
 router.post('/attendance/mark', isAuthenticated, isAdmin, async (req, res) => {
   try {

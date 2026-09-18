@@ -1857,6 +1857,215 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // --- 2b. ATTENDANCE REPORTS & SUMMARY GRID ---
+  const reportAttRoleSelect = document.getElementById('reportAttRoleSelect');
+  const reportAttClassCol = document.getElementById('reportAttClassCol');
+  const btnLoadAttReportGrid = document.getElementById('btnLoadAttReportGrid');
+  const btnExportAttPDF = document.getElementById('btnExportAttPDF');
+  const btnExportAttExcel = document.getElementById('btnExportAttExcel');
+
+  if (reportAttRoleSelect) {
+    reportAttRoleSelect.addEventListener('change', () => {
+      if (reportAttRoleSelect.value === 'Teacher') {
+        if (reportAttClassCol) reportAttClassCol.classList.add('d-none');
+      } else {
+        if (reportAttClassCol) reportAttClassCol.classList.remove('d-none');
+      }
+    });
+  }
+
+  if (btnLoadAttReportGrid) {
+    btnLoadAttReportGrid.addEventListener('click', loadAttendanceReportsGrid);
+  }
+
+  if (btnExportAttPDF) {
+    btnExportAttPDF.addEventListener('click', exportAttendancePDF);
+  }
+
+  if (btnExportAttExcel) {
+    btnExportAttExcel.addEventListener('click', exportAttendanceCSV);
+  }
+
+  let currentReportData = null;
+
+  async function loadAttendanceReportsGrid() {
+    if (!activeSessionId) { alert('No active academic session.'); return; }
+    const role = reportAttRoleSelect ? reportAttRoleSelect.value : 'Student';
+    const classId = document.getElementById('reportAttClassSelect')?.value;
+    const monthInput = document.getElementById('reportAttMonthSelect');
+    
+    let month = monthInput ? monthInput.value : '';
+    if (!month) {
+      const now = new Date();
+      month = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      if (monthInput) monthInput.value = month;
+    }
+
+    if (role === 'Student' && !classId) {
+      alert('Please select a class for student attendance report.');
+      return;
+    }
+
+    const tableArea = document.getElementById('reportAttTableArea');
+    const headerArea = document.getElementById('reportAttHeaderArea');
+    const table = document.getElementById('reportAttGridTable');
+    if (!table) return;
+
+    const thead = table.querySelector('thead');
+    const tbody = table.querySelector('tbody');
+    tbody.innerHTML = `<tr><td colspan="10" class="text-center text-muted py-4"><span class="spinner-border spinner-border-sm me-2"></span>Generating monthly grid report...</td></tr>`;
+    
+    if (headerArea) headerArea.classList.remove('d-none');
+    if (tableArea) tableArea.classList.remove('d-none');
+
+    try {
+      let url = '';
+      if (role === 'Student') {
+        url = `/api/attendance/monthly?classId=${classId}&academicYearId=${activeSessionId}&month=${month}`;
+      } else {
+        url = `/api/teachers/attendance/monthly-grid?academicYearId=${activeSessionId}&month=${month}`;
+      }
+
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      currentReportData = { role, month, data };
+
+      const [yr, mo] = month.split('-').map(Number);
+      const daysInMonth = new Date(yr, mo, 0).getDate();
+      const daysArr = [];
+      for (let i = 1; i <= daysInMonth; i++) {
+        daysArr.push(String(i).padStart(2, '0'));
+      }
+
+      // Render Header
+      let ths = `<tr>
+        <th style="min-width:60px;">${role === 'Student' ? 'Roll' : 'ID'}</th>
+        <th style="min-width:160px; text-align:left;">${role === 'Student' ? 'Student Name' : 'Faculty Name'}</th>`;
+      daysArr.forEach(d => {
+        ths += `<th style="min-width:28px; padding:4px 2px; font-size:11px;">${d}</th>`;
+      });
+      ths += `<th class="text-success" style="min-width:35px;">P</th>
+        <th class="text-danger" style="min-width:35px;">A</th>
+        <th class="text-warning" style="min-width:35px;">L</th>
+        <th style="min-width:55px;">%</th>
+      </tr>`;
+      thead.innerHTML = ths;
+
+      // Render Rows
+      const list = role === 'Student' ? (data.students || []) : (data.teachers || []);
+      tbody.innerHTML = '';
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="${daysArr.length + 6}" class="text-center text-muted py-4">No ${role.toLowerCase()} records found for this period.</td></tr>`;
+        return;
+      }
+
+      const getBadge = (status) => {
+        if (!status) return '<span class="text-muted opacity-50">-</span>';
+        if (status === 'Present') return '<span class="badge bg-success p-1" style="font-size:10px;">P</span>';
+        if (status === 'Absent') return '<span class="badge bg-danger p-1" style="font-size:10px;">A</span>';
+        if (status === 'Leave') return '<span class="badge bg-warning text-dark p-1" style="font-size:10px;">L</span>';
+        return status;
+      };
+
+      list.forEach(item => {
+        const tr = document.createElement('tr');
+        const rollOrId = role === 'Student' ? (item.roll_number || '-') : item.id;
+        const name = item.name || '-';
+        const record = item.record || {};
+        const summary = item.summary || { present: 0, absent: 0, leave: 0, percentage: 0 };
+
+        let tds = `<td class="fw-semibold">${rollOrId}</td>
+          <td class="fw-bold text-start">${name}</td>`;
+        
+        daysArr.forEach(d => {
+          const dateKey = `${month}-${d}`;
+          tds += `<td>${getBadge(record[dateKey])}</td>`;
+        });
+
+        const pctColor = summary.percentage >= 75 ? 'text-success' : 'text-danger';
+        tds += `<td class="fw-bold text-success">${summary.present}</td>
+          <td class="fw-bold text-danger">${summary.absent}</td>
+          <td class="fw-bold text-warning">${summary.leave}</td>
+          <td class="fw-bold ${pctColor}">${summary.percentage}%</td>`;
+
+        tr.innerHTML = tds;
+        tbody.appendChild(tr);
+      });
+
+      const titleEl = document.getElementById('reportGridTitle');
+      if (titleEl) {
+        titleEl.textContent = `${role} Monthly Attendance Grid - ${month}`;
+      }
+
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="10" class="text-center text-danger py-4"><i class="fa-solid fa-triangle-exclamation me-2"></i>${err.message}</td></tr>`;
+    }
+  }
+
+  function exportAttendanceCSV() {
+    if (!currentReportData || !currentReportData.data) {
+      alert('Please generate a report grid first.');
+      return;
+    }
+    const { role, month, data } = currentReportData;
+    const list = role === 'Student' ? (data.students || []) : (data.teachers || []);
+    if (list.length === 0) { alert('No data to export.'); return; }
+
+    const [yr, mo] = month.split('-').map(Number);
+    const daysInMonth = new Date(yr, mo, 0).getDate();
+    const daysArr = [];
+    for (let i = 1; i <= daysInMonth; i++) daysArr.push(String(i).padStart(2, '0'));
+
+    let csv = `${role} Monthly Attendance Summary - ${month}\n`;
+    csv += `${role === 'Student' ? 'Roll' : 'ID'},Name,` + daysArr.join(',') + `,Present,Absent,Leave,Percentage\n`;
+
+    list.forEach(item => {
+      const rollOrId = role === 'Student' ? (item.roll_number || '-') : item.id;
+      const name = `"${item.name || '-'}"`;
+      const record = item.record || {};
+      const summary = item.summary || { present: 0, absent: 0, leave: 0, percentage: 0 };
+
+      const dayCols = daysArr.map(d => {
+        const status = record[`${month}-${d}`];
+        if (status === 'Present') return 'P';
+        if (status === 'Absent') return 'A';
+        if (status === 'Leave') return 'L';
+        return '-';
+      }).join(',');
+
+      csv += `${rollOrId},${name},${dayCols},${summary.present},${summary.absent},${summary.leave},${summary.percentage}%\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Attendance_Report_${role}_${month}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportAttendancePDF() {
+    const element = document.getElementById('reportAttTableContainer');
+    if (!element) { alert('No report container found.'); return; }
+
+    const opt = {
+      margin: 0.3,
+      filename: `Attendance_Report_${new Date().toISOString().substring(0,10)}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+    };
+    if (window.html2pdf) {
+      window.html2pdf().set(opt).from(element).save();
+    } else {
+      window.print();
+    }
+  }
+
   // --- 3. STUDENT ATTENDANCE HISTORY ---
   async function loadStudentAttendanceHistory() {
     const studentId = document.getElementById('historyStudentSelect').value;
@@ -2280,6 +2489,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const res = await fetch(`/api/teachers/payroll?month=${month}&academicYearId=${activeSessionId}`);
       const records = await res.json();
+
+      // Calculate Summary Metrics
+      let totalDue = 0, totalPaid = 0, totalRemaining = 0;
+      records.forEach(r => {
+        totalDue += Number(r.basic_salary || 0);
+        totalPaid += Number(r.paid_amount || 0);
+        totalRemaining += Number(r.remaining_amount || 0);
+      });
+
+      const dueEl = document.getElementById('cardPayrollTotalDue');
+      const paidEl = document.getElementById('cardPayrollTotalPaid');
+      const remEl = document.getElementById('cardPayrollTotalRemaining');
+      if (dueEl) dueEl.textContent = `PKR ${totalDue.toLocaleString()}`;
+      if (paidEl) paidEl.textContent = `PKR ${totalPaid.toLocaleString()}`;
+      if (remEl) remEl.textContent = `PKR ${totalRemaining.toLocaleString()}`;
 
       const tbody = document.querySelector('#payrollTable tbody');
       if (!tbody) return;
