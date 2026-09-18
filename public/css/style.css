@@ -651,12 +651,13 @@ h1, h2, h3, h4, h5, h6 {
 /* Mobile responsive enhancements */
 @media (max-width: 991.98px) {
   .sidebar {
-    transform: translateX(-100%);
+    transform: translateX(100%);
     width: 260px !important;
     position: fixed;
     top: 0;
     bottom: 0;
-    left: 0;
+    left: auto !important;
+    right: 0 !important;
     z-index: 1040;
     transition: transform var(--transition-speed) ease-in-out;
   }
