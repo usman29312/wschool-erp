@@ -2672,7 +2672,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('recordPaymentRemaining').textContent = `PKR ${Number(remaining).toLocaleString()}`;
 
     document.getElementById('recordPaymentAmount').value = '';
-    document.getElementById('recordPaymentAmount').max = Number(remaining);
+    const amountEl = document.getElementById('recordPaymentAmount');
+    amountEl.removeAttribute('max');
+    const remainingNum = Number(remaining);
+    if (remainingNum >= 0.01) {
+      amountEl.max = remainingNum;
+    }
     document.getElementById('recordPaymentDate').value = new Date().toISOString().substring(0, 10);
     document.getElementById('recordPaymentMethod').value = 'Cash';
     document.getElementById('recordPaymentNotes').value = '';
@@ -2784,7 +2789,8 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           custom_fee: customFee === '' ? null : Number(customFee),
-          updateCurrentVoucher
+          updateCurrentVoucher,
+          academicYearId: activeSessionId
         })
       });
       const data = await res.json();
@@ -2819,16 +2825,17 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ class_id, academic_year_id, monthly_fee, admission_fee, exam_fee, other_charges })
       });
-      if (res.ok) {
-        showAlert('Fee structure saved successfully.');
-        document.getElementById('feeStructureForm').reset();
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      showAlert(data.message || 'Fee structure saved successfully.');
+      document.getElementById('feeStructureForm').reset();
         
-        const modalEl = document.getElementById('feeStructureModal');
-        const modal = bootstrap.Modal.getInstance(modalEl);
-        modal.hide();
-      }
+      const modalEl = document.getElementById('feeStructureModal');
+      const modal = bootstrap.Modal.getInstance(modalEl);
+      if (modal) modal.hide();
+      loadFeesView();
     } catch (err) {
-      console.error(err);
+      alert(err.message || 'Failed to save fee structure.');
     }
   });
 

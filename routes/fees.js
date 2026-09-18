@@ -1,8 +1,65 @@
 const express = require('express');
 const router = express.Router();
+const { Op } = require('sequelize');
 const { Fee, FeeStructure, Student, StudentEnrollment, Class, AcademicYear, FeePayment } = require('../models');
 const { isAuthenticated, isAdmin } = require('./middleware');
 const { sequelize } = require('../config/database');
+
+function hasCustomFee(student) {
+  return student && student.custom_fee !== null && student.custom_fee !== undefined;
+}
+
+function tuitionForStudent(student, structure) {
+  if (hasCustomFee(student)) return Number(student.custom_fee);
+  return structure ? Number(structure.monthly_fee) || 0 : 0;
+}
+
+function otherChargesOf(structure) {
+  return structure ? Number(structure.other_charges) || 0 : 0;
+}
+
+function applyAmountToFee(fee, newAmount) {
+  fee.amount = Number(Number(newAmount).toFixed(2));
+  const paid = Number(fee.paid_amount);
+  fee.remaining_amount = Number((fee.amount - paid).toFixed(2));
+  if (fee.remaining_amount <= 0) {
+    fee.status = 'Paid';
+    fee.remaining_amount = 0;
+  } else if (paid > 0) {
+    fee.status = 'Partial';
+  } else {
+    fee.status = 'Pending';
+  }
+}
+
+async function recalculateUnpaidFees({ classId, academicYearId, studentId, newStructure }) {
+  const where = {
+    academic_year_id: academicYearId,
+    status: { [Op.ne]: 'Paid' }
+  };
+  if (classId) where.class_id = classId;
+  if (studentId) where.student_id = studentId;
+
+  const fees = await Fee.findAll({
+    where,
+    include: [{ model: Student, attributes: ['id', 'custom_fee'] }]
+  });
+
+  let updated = 0;
+  for (const fee of fees) {
+    const nextAmount = tuitionForStudent(fee.Student, newStructure) + otherChargesOf(newStructure);
+    const remaining = Number((nextAmount - Number(fee.paid_amount)).toFixed(2));
+    if (Number(fee.amount) === Number(nextAmount.toFixed(2)) && Number(fee.remaining_amount) === remaining) {
+      continue;
+    }
+
+    applyAmountToFee(fee, nextAmount);
+    await fee.save();
+    updated += 1;
+  }
+
+  return updated;
+}
 
 // 1. FEE STRUCTURES (Admin only)
 // GET structures
@@ -53,7 +110,19 @@ router.post('/structures', isAuthenticated, isAdmin, async (req, res) => {
       await structure.save();
     }
 
-    return res.status(created ? 201 : 200).json({ message: 'Fee structure configured successfully.', structure });
+    const vouchersUpdated = await recalculateUnpaidFees({
+      classId: class_id,
+      academicYearId: academic_year_id,
+      newStructure: structure
+    });
+
+    return res.status(created ? 201 : 200).json({
+      message: vouchersUpdated
+        ? `Fee structure saved. ${vouchersUpdated} unpaid bill(s) updated. Paid bills were left unchanged.`
+        : 'Fee structure configured successfully.',
+      structure,
+      vouchersUpdated
+    });
   } catch (error) {
     console.error('Save fee structure error:', error);
     return res.status(500).json({ error: 'Failed to configure fee structure.' });
@@ -89,7 +158,8 @@ router.get('/records', isAuthenticated, async (req, res) => {
           });
           const studentObj = await Student.findByPk(enroll.student_id);
           if (studentObj) {
-            let baseFee = (studentObj.custom_fee !== null && studentObj.custom_fee !== undefined)
+            if (!structure && !hasCustomFee(studentObj)) continue;
+            let baseFee = hasCustomFee(studentObj)
               ? Number(studentObj.custom_fee)
               : (structure ? Number(structure.monthly_fee) : 0);
             let totalAmount = baseFee + (structure ? Number(structure.other_charges) : 0);
@@ -152,11 +222,11 @@ router.post('/records/generate', isAuthenticated, isAdmin, async (req, res) => {
     }
 
     let generatedCount = 0;
+    let updatedCount = 0;
     for (const enroll of enrollments) {
-      // Find the student to check for custom_fee
       const studentObj = await Student.findByPk(enroll.student_id);
       
-      let baseFee = (studentObj && studentObj.custom_fee !== null) 
+      let baseFee = hasCustomFee(studentObj)
         ? Number(studentObj.custom_fee) 
         : Number(structure.monthly_fee);
 
@@ -164,7 +234,6 @@ router.post('/records/generate', isAuthenticated, isAdmin, async (req, res) => {
       if (includeAdmission) totalAmount += Number(structure.admission_fee);
       if (includeExam) totalAmount += Number(structure.exam_fee);
 
-      // Avoid duplicate monthly bill
       const [fee, created] = await Fee.findOrCreate({
         where: { student_id: enroll.student_id, month, academic_year_id },
         defaults: {
@@ -175,11 +244,17 @@ router.post('/records/generate', isAuthenticated, isAdmin, async (req, res) => {
           status: 'Pending'
         }
       });
-      if (created) generatedCount++;
+      if (created) {
+        generatedCount++;
+      } else if (fee.status !== 'Paid') {
+        applyAmountToFee(fee, totalAmount);
+        await fee.save();
+        updatedCount++;
+      }
     }
 
     return res.status(201).json({ 
-      message: `Generated ${generatedCount} fee vouchers. (${enrollments.length - generatedCount} already existed)` 
+      message: `Generated ${generatedCount} fee voucher(s). ${updatedCount} unpaid existing bill(s) updated to the current fee.`
     });
   } catch (error) {
     console.error('Generate fees error:', error);
@@ -346,65 +421,45 @@ router.get('/records/:id/payments', isAuthenticated, async (req, res) => {
 // PUT Set or clear a student's custom monthly fee
 router.put('/students/:studentId/custom-fee', isAuthenticated, isAdmin, async (req, res) => {
   try {
-    const { custom_fee, updateCurrentVoucher } = req.body;
+    const { custom_fee, updateCurrentVoucher, academicYearId } = req.body;
     const student = await Student.findByPk(req.params.studentId);
     if (!student) {
       return res.status(404).json({ error: 'Student not found.' });
     }
 
-    const previousCustomFee = student.custom_fee;
     student.custom_fee = (custom_fee === '' || custom_fee === null || custom_fee === undefined) ? null : Number(custom_fee);
     await student.save();
 
-    let voucherUpdated = false;
+    let vouchersUpdated = 0;
+    const shouldUpdateVouchers = updateCurrentVoucher !== false;
 
-    // Recalculate unpaid current-month voucher if requested
-    if (updateCurrentVoucher) {
-      const activeSession = await AcademicYear.findOne({ where: { status: 'active' } });
-      if (activeSession) {
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        const currentMonthName = monthNames[new Date().getMonth()];
-
-        const feeRecord = await Fee.findOne({
-          where: {
-            student_id: student.id,
-            month: currentMonthName,
-            academic_year_id: activeSession.id
-          }
+    if (shouldUpdateVouchers) {
+      const session = academicYearId
+        ? await AcademicYear.findByPk(academicYearId)
+        : await AcademicYear.findOne({ where: { status: 'active' } });
+      if (session) {
+        const enrollment = await StudentEnrollment.findOne({
+          where: { student_id: student.id, academic_year_id: session.id }
         });
+        const classId = enrollment ? enrollment.class_id : null;
+        const structure = classId
+          ? await FeeStructure.findOne({ where: { class_id: classId, academic_year_id: session.id } })
+          : null;
 
-        if (feeRecord && feeRecord.status !== 'Paid') {
-          const structure = await FeeStructure.findOne({
-            where: { class_id: feeRecord.class_id, academic_year_id: activeSession.id }
-          });
-          if (structure) {
-            const oldTuition = (previousCustomFee !== null) ? Number(previousCustomFee) : Number(structure.monthly_fee);
-            const newTuition = (student.custom_fee !== null) ? Number(student.custom_fee) : Number(structure.monthly_fee);
-            const delta = newTuition - oldTuition;
-
-            feeRecord.amount = Number(feeRecord.amount) + delta;
-            feeRecord.remaining_amount = Number(feeRecord.amount) - Number(feeRecord.paid_amount);
-
-            if (feeRecord.remaining_amount <= 0) {
-              feeRecord.status = 'Paid';
-              feeRecord.remaining_amount = 0;
-            } else if (feeRecord.paid_amount > 0) {
-              feeRecord.status = 'Partial';
-            } else {
-              feeRecord.status = 'Pending';
-            }
-
-            await feeRecord.save();
-            voucherUpdated = true;
-          }
-        }
+        vouchersUpdated = await recalculateUnpaidFees({
+          studentId: student.id,
+          academicYearId: session.id,
+          newStructure: structure
+        });
       }
     }
 
     return res.json({ 
-      message: 'Student custom fee updated successfully.', 
+      message: vouchersUpdated
+        ? `Student custom fee updated. ${vouchersUpdated} unpaid bill(s) recalculated. Paid bills were left unchanged.`
+        : 'Student custom fee updated successfully.',
       custom_fee: student.custom_fee,
-      voucherUpdated 
+      vouchersUpdated
     });
   } catch (error) {
     console.error('Update custom fee error:', error);
